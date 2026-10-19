@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Гараж 77 — автосервис</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+  <style>
+    /* Автосервис: асфальт, сигнальный жёлтый, разметка-«зебра». Техничный шрифт, шаги работы как на табло */
+    :root {
+      --bg: #17191B;
+      --fg: #EDEDED;
+      --muted: #9AA0A6;
+      --accent: #FFC400;
+      --panel: #212427;
+      --line: rgba(237, 237, 237, .12);
+      --on-accent: #17191B;
+      --btn-hover: #EDEDED;
+      --btn-hover-text: #17191B;
+      --radius: 6px;
+      --display: "Russo One", "Arial Black", sans-serif;
+      --body: "Exo 2", system-ui, sans-serif;
+    }
+
+    .nav { padding: 18px 0; }
+    .nav.is-scrolled { background: rgba(23, 25, 27, .92); backdrop-filter: blur(10px); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo { font-family: var(--display); font-size: 24px; }
+    .logo b { background: var(--accent); color: var(--bg); padding: 0 8px; border-radius: 4px; margin-left: 6px; }
+
+    .hero { position: relative; padding: 150px 0 0; overflow: hidden; }
+    .hero h1 { font-size: clamp(54px, 9vw, 140px); text-transform: uppercase; line-height: .95; }
+    .hero h1 .y { color: var(--accent); }
+    .hero p { font-size: 19px; color: var(--muted); max-width: 520px; margin: 28px 0 36px; }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .road { position: relative; height: 180px; margin-top: 70px; background: #101113; overflow: hidden; }
+    .road::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 8px; margin-top: -4px; background: repeating-linear-gradient(90deg, var(--accent) 0 60px, transparent 60px 120px); animation: road 1s linear infinite; }
+    @keyframes road { to { background-position: -120px 0; } }
+    .car { position: absolute; left: 50%; top: 28px; width: 260px; margin-left: -130px; animation: bump .4s ease-in-out infinite alternate; }
+    @keyframes bump { to { transform: translateY(-3px); } }
+    .wheel { transform-box: fill-box; transform-origin: center; animation: spin .5s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .zebra { height: 16px; background: repeating-linear-gradient(-45deg, var(--accent) 0 18px, var(--bg) 18px 36px); }
+
+    section { padding: 110px 0; }
+    h2 { font-size: clamp(38px, 5.5vw, 76px); text-transform: uppercase; margin-bottom: 48px; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 2px solid var(--line); }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    .svc { position: relative; padding: 36px 30px; background: var(--bg); overflow: hidden; }
+    .svc::after { content: ""; position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .6s var(--ease); }
+    .svc:hover::after { transform: none; }
+    .svc span { font-family: var(--display); color: var(--accent); font-size: 14px; }
+    .svc h3 { font-size: 24px; margin: 14px 0 10px; text-transform: uppercase; }
+    .svc p { color: var(--muted); font-size: 15px; margin-bottom: 16px; }
+    .svc b { font-size: 18px; }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: s; }
+    @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .steps { grid-template-columns: 1fr; } }
+    .step { padding: 26px; border-radius: 10px; background: var(--panel); }
+    .step::before { counter-increment: s; content: "0" counter(s); display: block; font-family: var(--display); font-size: 46px; color: var(--accent); margin-bottom: 10px; }
+    .step h3 { font-family: var(--body); font-weight: 600; font-size: 19px; margin-bottom: 6px; }
+    .step p { color: var(--muted); font-size: 15px; }
+
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
+    @media (max-width: 700px) { .board { grid-template-columns: 1fr; } }
+    .board strong { display: block; font-family: var(--display); font-size: clamp(50px, 7vw, 90px); color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+    .board span { color: var(--muted); }
+
+    .contact { background: var(--accent); color: var(--bg); }
+    .contact .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 30px; }
+    .contact h2 { margin: 0 0 10px; }
+    .contact .btn { --accent: #17191B; --on-accent: #FFC400; }
+
+    footer { padding: 40px 0 80px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a href="#top" class="logo">Гараж<b>77</b></a>
+      <a href="#contact" class="btn magnetic" style="padding:12px 20px">Записаться</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" style="padding-bottom:0">
+      <div class="wrap">
+        <p class="eyebrow reveal">Автосервис · Астана</p>
+        <h1><span class="line-mask"><span data-split>Ремонт</span></span><span class="line-mask"><span class="y" data-split>за один день</span></span></h1>
+        <p class="reveal" style="--d:.5s">Диагностика, ТО, ходовая и шиномонтаж. Согласуем цену до начала работы и показываем старые запчасти.</p>
+        <div class="hero__actions reveal" style="--d:.6s">
+          <a href="#contact" class="btn magnetic">Записаться на диагностику</a>
+          <a href="#services" class="btn btn--ghost magnetic">Цены</a>
+        </div>
+      </div>
+      <div class="road" aria-hidden="true">
+        <svg class="car" viewBox="0 0 260 120">
+          <path d="M20 80 L30 52 C34 42 44 38 56 38 L90 38 L120 14 C126 10 132 8 140 8 L190 8 C200 8 206 12 212 20 L232 46 C246 48 252 56 252 66 L252 80 Z" fill="#FFC400"/>
+          <path d="M108 38 L128 20 L150 20 L150 38 Z M160 38 L160 20 L196 20 L214 38 Z" fill="#17191B" opacity=".85"/>
+          <g class="wheel"><circle cx="70" cy="86" r="22" fill="#0B0B0C"/><circle cx="70" cy="86" r="8" fill="#9AA0A6"/><rect x="68" y="66" width="4" height="40" fill="#555"/></g>
+          <g class="wheel"><circle cx="200" cy="86" r="22" fill="#0B0B0C"/><circle cx="200" cy="86" r="8" fill="#9AA0A6"/><rect x="198" y="66" width="4" height="40" fill="#555"/></g>
+        </svg>
+      </div>
+    </section>
+    <div class="zebra" aria-hidden="true"></div>
+
+    <section id="services">
+      <div class="wrap">
+        <h2 class="reveal">Услуги</h2>
+        <div class="grid">
+          <article class="svc reveal"><span>/ 01</span><h3>Компьютерная диагностика</h3><p>Считываем ошибки всех блоков и даём отчёт.</p><b>от 5 000 ₸</b></article>
+          <article class="svc reveal" style="--d:.06s"><span>/ 02</span><h3>Замена масла</h3><p>Масло и фильтр — за 30 минут, пока вы пьёте кофе.</p><b>от 4 000 ₸</b></article>
+          <article class="svc reveal" style="--d:.12s"><span>/ 03</span><h3>Ходовая часть</h3><p>Подвеска, рулевое, тормоза. Проверка на подъёмнике.</p><b>от 8 000 ₸</b></article>
+          <article class="svc reveal"><span>/ 04</span><h3>Шиномонтаж</h3><p>Сезонная смена шин и балансировка.</p><b>от 10 000 ₸</b></article>
+          <article class="svc reveal" style="--d:.06s"><span>/ 05</span><h3>Развал-схождение</h3><p>3D-стенд, распечатка до и после.</p><b>от 9 000 ₸</b></article>
+          <article class="svc reveal" style="--d:.12s"><span>/ 06</span><h3>Автоэлектрика</h3><p>Стартер, генератор, проводка, сигнализации.</p><b>от 6 000 ₸</b></article>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="wrap">
+        <h2 class="reveal">Как мы работаем</h2>
+        <div class="steps">
+          <div class="step reveal"><h3>Запись</h3><p>Звонок или WhatsApp, подберём время.</p></div>
+          <div class="step reveal" style="--d:.08s"><h3>Диагностика</h3><p>Находим причину и называем точную цену.</p></div>
+          <div class="step reveal" style="--d:.16s"><h3>Ремонт</h3><p>Только после вашего согласия.</p></div>
+          <div class="step reveal" style="--d:.24s"><h3>Гарантия</h3><p>На работы и запчасти — до 6 месяцев.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="wrap board">
+        <div class="reveal"><strong data-count="6200">0</strong><span>машин отремонтировали</span></div>
+        <div class="reveal" style="--d:.1s"><strong data-count="8">0</strong><span>подъёмников</span></div>
+        <div class="reveal" style="--d:.2s"><strong data-count="6">0</strong><span>месяцев гарантии</span></div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Записаться</h2>
+          <p>+7 (700) 000-00-00 · пн–сб 09:00–20:00 · ул. Примерная, 77</p>
+        </div>
+        <a href="#" class="btn magnetic reveal">Написать в WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">© Гараж 77 · автосервис в Астане</div></footer>
+
+  <div class="template-note">Шаблон · <a href="../">все шаблоны</a></div>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="../shared/motion.js"></script>
+</body>
+</html>

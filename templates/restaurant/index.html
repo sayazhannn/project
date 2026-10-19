@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Дастархан — ресторан казахской кухни</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+  <style>
+    /* Ресторан казахской кухни: гранат, золото, войлочно-кремовый. Орнамент «қошқар мүйіз», меню вкладками, банкетный зал */
+    :root {
+      --bg: #2E0E15;
+      --fg: #F7EBD9;
+      --muted: #C9AE95;
+      --accent: #D9A441;
+      --wine: #4A1420;
+      --line: rgba(247, 235, 217, .15);
+      --on-accent: #2E0E15;
+      --btn-hover: #F7EBD9;
+      --btn-hover-text: #2E0E15;
+      --radius: 2px;
+      --display: "Prata", Georgia, serif;
+      --body: "Golos Text", system-ui, sans-serif;
+    }
+
+    .nav { padding: 20px 0; }
+    .nav.is-scrolled { background: rgba(46, 14, 21, .92); backdrop-filter: blur(10px); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo { font-family: var(--display); font-size: 26px; color: var(--accent); }
+    .nav__links { display: flex; gap: 28px; font-size: 15px; }
+    @media (max-width: 760px) { .nav__links { display: none; } }
+
+    .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; text-align: center; padding: 120px 0 80px; overflow: hidden; }
+    .ornament { position: absolute; width: min(760px, 120vw); opacity: .16; animation: turn 80s linear infinite; }
+    .ornament path { fill: none; stroke: var(--accent); stroke-width: 3; }
+    @keyframes turn { to { transform: rotate(360deg); } }
+    .hero h1 { font-size: clamp(60px, 11vw, 170px); font-weight: 400; color: var(--fg); }
+    .hero p { max-width: 520px; margin: 26px auto 38px; font-size: 19px; color: var(--muted); }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+    .border { height: 28px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28'%3E%3Cpath d='M0 14 Q14 0 28 14 T56 14' fill='none' stroke='%23D9A441' stroke-width='2'/%3E%3Ccircle cx='28' cy='14' r='3' fill='%23D9A441'/%3E%3C/svg%3E") repeat-x center; animation: slide 6s linear infinite; }
+    @keyframes slide { to { background-position: 56px center; } }
+
+    section { padding: 110px 0; }
+    h2 { font-size: clamp(40px, 6vw, 82px); font-weight: 400; margin-bottom: 30px; }
+    h2 em { color: var(--accent); font-style: normal; }
+
+    .story .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    @media (max-width: 860px) { .story .wrap { grid-template-columns: 1fr; } }
+    .story p { color: var(--muted); margin-bottom: 16px; font-size: 18px; }
+    .frame { aspect-ratio: 4/5; border: 1px solid var(--accent); padding: 14px; }
+    .frame div { height: 100%; background: radial-gradient(circle at 50% 40%, #6B2232, #3A0F19); display: grid; place-items: center; font-family: var(--display); color: var(--accent); font-size: 22px; text-align: center; padding: 20px; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+    .tabs button { padding: 12px 22px; border: 1px solid var(--line); background: none; border-radius: 999px; cursor: pointer; transition: background .4s, color .4s, border-color .4s; }
+    .tabs button[aria-selected="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    [data-panel] { animation: fade .6s var(--ease); }
+    @keyframes fade { from { opacity: 0; transform: translateY(12px); } }
+    .dish { display: grid; grid-template-columns: 1fr auto; gap: 6px 20px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .dish h3 { font-size: 26px; font-weight: 400; }
+    .dish b { font-family: var(--display); color: var(--accent); font-size: 22px; font-weight: 400; font-variant-numeric: tabular-nums; }
+    .dish p { grid-column: 1 / -1; color: var(--muted); font-size: 15px; }
+
+    .hall { background: var(--wine); }
+    .hall .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-items: center; }
+    @media (max-width: 860px) { .hall .wrap { grid-template-columns: 1fr; } }
+    .hall__nums { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .hall__nums strong { display: block; font-family: var(--display); font-size: clamp(48px, 6vw, 80px); color: var(--accent); font-weight: 400; line-height: 1; }
+    .hall__nums span { color: var(--muted); }
+    .hall p { color: var(--muted); margin-bottom: 30px; font-size: 18px; }
+
+    .visit { text-align: center; }
+    .visit p { color: var(--muted); font-size: 19px; margin-bottom: 8px; }
+    .visit .btn { margin-top: 26px; }
+
+    footer { padding: 40px 0 80px; text-align: center; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a href="#top" class="logo">Дастархан</a>
+      <nav class="nav__links"><a href="#story">О нас</a><a href="#menu">Меню</a><a href="#hall">Банкеты</a></nav>
+      <a href="#visit" class="btn magnetic" style="padding:12px 20px">Забронировать</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <svg class="ornament" viewBox="0 0 400 400" aria-hidden="true" data-speed="0.1">
+        <g transform="translate(200 200)">
+          <path id="horn" d="M0 -40 C0 -90 50 -110 70 -80 C88 -54 60 -30 44 -46 C32 -58 46 -72 56 -64"/>
+          <use href="#horn" transform="scale(-1 1)"/>
+          <use href="#horn" transform="rotate(90)"/><use href="#horn" transform="rotate(90) scale(-1 1)"/>
+          <use href="#horn" transform="rotate(180)"/><use href="#horn" transform="rotate(180) scale(-1 1)"/>
+          <use href="#horn" transform="rotate(270)"/><use href="#horn" transform="rotate(270) scale(-1 1)"/>
+          <circle r="150"/><circle r="170"/>
+        </g>
+      </svg>
+      <div class="wrap">
+        <p class="eyebrow reveal">Ресторан казахской кухни · Астана</p>
+        <h1><span class="line-mask"><span data-split>Дастархан</span></span></h1>
+        <p class="reveal" style="--d:.5s">Бешбармак по семейному рецепту, баурсаки из печи и чай с молоком — так, как встречают гостей дома.</p>
+        <div class="hero__actions reveal" style="--d:.6s">
+          <a href="#menu" class="btn magnetic">Меню</a>
+          <a href="#hall" class="btn btn--ghost magnetic">Банкеты и тои</a>
+        </div>
+      </div>
+    </section>
+    <div class="border" aria-hidden="true"></div>
+
+    <section class="story" id="story">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow reveal">О нас</p>
+          <h2 class="reveal">Как <em>дома</em>, только для большой компании</h2>
+          <p class="reveal">Готовим из мяса фермерских хозяйств Акмолинской области. Тесто для бешбармака раскатываем вручную каждое утро.</p>
+          <p class="reveal">Зал для семейных ужинов, отдельные кабины и банкетный зал на 150 гостей.</p>
+        </div>
+        <div class="frame reveal" style="--d:.15s" data-speed="-0.05"><div>Сюда — фото зала или фирменного блюда</div></div>
+      </div>
+    </section>
+
+    <section id="menu">
+      <div class="wrap" data-tabs>
+        <h2 class="reveal">Меню</h2>
+        <div class="tabs reveal" role="tablist">
+          <button data-tab="hot" aria-selected="true">Горячее</button>
+          <button data-tab="cold" aria-selected="false">Закуски</button>
+          <button data-tab="tea" aria-selected="false">Чай и выпечка</button>
+        </div>
+        <div data-panel="hot">
+          <div class="dish"><h3>Бешбармак</h3><b>6 500 ₸</b><p>Конина и баранина, домашнее тесто, сорпа</p></div>
+          <div class="dish"><h3>Куырдак</h3><b>4 800 ₸</b><p>Жаркое из баранины с картофелем и луком</p></div>
+          <div class="dish"><h3>Манты</h3><b>3 200 ₸</b><p>С тыквой или мясом, 5 штук</p></div>
+        </div>
+        <div data-panel="cold" hidden>
+          <div class="dish"><h3>Казы-карта</h3><b>7 900 ₸</b><p>Ассорти из конины</p></div>
+          <div class="dish"><h3>Салат «Аксай»</h3><b>2 900 ₸</b><p>Говядина, овощи, кунжут</p></div>
+        </div>
+        <div data-panel="tea" hidden>
+          <div class="dish"><h3>Чай с молоком</h3><b>1 500 ₸</b><p>Чайник на компанию</p></div>
+          <div class="dish"><h3>Баурсаки</h3><b>1 200 ₸</b><p>Горячие, со сметаной и мёдом</p></div>
+          <div class="dish"><h3>Чак-чак</h3><b>1 800 ₸</b><p>Домашний, с мёдом</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hall" id="hall">
+      <div class="wrap">
+        <div>
+          <h2 class="reveal">Банкеты и <em>тои</em></h2>
+          <p class="reveal">Свадьбы, юбилеи, кудалык. Поможем с меню, ведущим и оформлением зала.</p>
+          <a href="#visit" class="btn magnetic reveal">Обсудить банкет</a>
+        </div>
+        <div class="hall__nums">
+          <div class="reveal"><strong data-count="150">0</strong><span>гостей в зале</span></div>
+          <div class="reveal" style="--d:.1s"><strong data-count="6">0</strong><span>VIP-кабин</span></div>
+          <div class="reveal" style="--d:.2s"><strong data-count="40">0</strong><span>блюд в меню</span></div>
+          <div class="reveal" style="--d:.3s"><strong data-count="12">0</strong><span>лет работаем</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="visit" id="visit">
+      <div class="wrap">
+        <h2 class="reveal">Ждём <em>в гости</em></h2>
+        <p class="reveal">Пр. Примерный, 40 · Астана</p>
+        <p class="reveal">Ежедневно 11:00–00:00 · +7 (700) 000-00-00</p>
+        <a href="#" class="btn magnetic reveal">Забронировать стол</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>© Дастархан · ресторан казахской кухни</footer>
+
+  <div class="template-note">Шаблон · <a href="../">все шаблоны</a></div>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="../shared/motion.js"></script>
+</body>
+</html>

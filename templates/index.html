@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Шаблоны сайтов</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #F3F2EF; --fg: #161616; --muted: #6E6B66; --ease: cubic-bezier(.22, 1, .36, 1); }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 "Manrope", system-ui, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    main { max-width: 1200px; margin: 0 auto; padding: 70px max(20px, 4vw) 80px; }
+    h1 { font: 600 clamp(36px, 6vw, 72px)/1 "Unbounded", system-ui, sans-serif; margin: 0 0 14px; }
+    .lead { color: var(--muted); max-width: 560px; margin: 0 0 44px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .t { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; min-height: 220px; padding: 24px; border-radius: 22px; overflow: hidden; color: var(--c-fg); background: var(--c-bg); transition: transform .5s var(--ease), box-shadow .5s var(--ease); animation: in .8s var(--ease) both; animation-delay: calc(var(--i) * 60ms); }
+    .t:hover { transform: translateY(-6px); box-shadow: 0 30px 50px -30px rgba(0, 0, 0, .45); }
+    .t::after { content: ""; position: absolute; right: -40px; bottom: -40px; width: 160px; height: 160px; border-radius: 50%; background: var(--c-accent); transition: transform .7s var(--ease); }
+    .t:hover::after { transform: scale(1.5); }
+    .t small { opacity: .7; position: relative; z-index: 1; }
+    .t b { position: relative; z-index: 1; font: 600 26px/1.1 "Unbounded", system-ui, sans-serif; }
+    .t span { position: relative; z-index: 1; font-size: 14px; opacity: .8; }
+    @keyframes in { from { opacity: 0; transform: translateY(20px); } }
+    .back { display: inline-block; margin-bottom: 30px; color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) { .t { animation: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="../">← Все сайты</a>
+    <h1>Шаблоны сайтов</h1>
+    <p class="lead">10 заготовок под разные бизнесы. Все данные вымышленные — под реальную компанию меняем название, тексты, цены, контакты и фото.</p>
+    <div class="grid">
+      <a class="t" href="coffee/" style="--i:0;--c-bg:#EFE8DA;--c-fg:#17291F;--c-accent:#D9622B"><small>Кофейня</small><div><b>Зерно</b><br><span>меню с ценами, счётчики</span></div></a>
+      <a class="t" href="barber/" style="--i:1;--c-bg:#121212;--c-fg:#F2EDE4;--c-accent:#C9A15B"><small>Барбершоп</small><div><b>Бритва</b><br><span>прайс, мастера, запись</span></div></a>
+      <a class="t" href="beauty/" style="--i:2;--c-bg:#F8ECEA;--c-fg:#4A2238;--c-accent:#EFC3C6"><small>Студия красоты</small><div><b>Пион</b><br><span>услуги, работы, отзыв</span></div></a>
+      <a class="t" href="dental/" style="--i:3;--c-bg:#E3F1F5;--c-fg:#0D2A3A;--c-accent:#0F7C86"><small>Стоматология</small><div><b>Улыбка+</b><br><span>врачи, цены, вопросы</span></div></a>
+      <a class="t" href="auto/" style="--i:4;--c-bg:#17191B;--c-fg:#EDEDED;--c-accent:#FFC400"><small>Автосервис</small><div><b>Гараж 77</b><br><span>услуги, этапы, гарантия</span></div></a>
+      <a class="t" href="fitness/" style="--i:5;--c-bg:#F4F1EC;--c-fg:#111;--c-accent:#FF5A36"><small>Фитнес-студия</small><div><b>Пульс</b><br><span>расписание, абонементы</span></div></a>
+      <a class="t" href="restaurant/" style="--i:6;--c-bg:#2E0E15;--c-fg:#F7EBD9;--c-accent:#D9A441"><small>Ресторан</small><div><b>Дастархан</b><br><span>меню вкладками, банкеты</span></div></a>
+      <a class="t" href="flowers/" style="--i:7;--c-bg:#EEF1E8;--c-fg:#22301F;--c-accent:#E26D88"><small>Цветы</small><div><b>Ромашка</b><br><span>каталог букетов, доставка</span></div></a>
+      <a class="t" href="kids/" style="--i:8;--c-bg:#FFF7E6;--c-fg:#1E2A5A;--c-accent:#FCC419"><small>Детский центр</small><div><b>Карандаш</b><br><span>программы, распорядок</span></div></a>
+      <a class="t" href="repair/" style="--i:9;--c-bg:#E9E7E3;--c-fg:#1E1E1E;--c-accent:#F25C05"><small>Ремонт квартир</small><div><b>Ремонт Про</b><br><span>до/после, калькулятор</span></div></a>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Карандаш — детский центр</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+  <style>
+    /* Детский центр: тёплая бумага, синий, красный, жёлтый — как цветные карандаши. Пружинящие фигуры и наклонённые карточки */
+    :root {
+      --bg: #FFF7E6;
+      --fg: #1E2A5A;
+      --muted: #5A6390;
+      --accent: #3B5BDB;
+      --red: #F03E3E;
+      --yellow: #FCC419;
+      --green: #2F9E44;
+      --line: rgba(30, 42, 90, .14);
+      --display: "Rubik", system-ui, sans-serif;
+      --body: "Nunito", system-ui, sans-serif;
+      --radius: 18px;
+    }
+    body { font-weight: 600; }
+
+    .nav { padding: 16px 0; }
+    .nav.is-scrolled { background: rgba(255, 247, 230, .92); backdrop-filter: blur(10px); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo { font-family: var(--display); font-weight: 800; font-size: 26px; }
+    .logo span:nth-child(1) { color: var(--red); } .logo span:nth-child(2) { color: var(--yellow); } .logo span:nth-child(3) { color: var(--green); }
+
+    .hero { position: relative; padding: 150px 0 110px; text-align: center; overflow: hidden; isolation: isolate; }
+    .shape { position: absolute; z-index: -1; animation: jump 3.4s cubic-bezier(.5, 0, .5, 1) infinite; }
+    .shape--1 { left: 6%; top: 22%; width: 90px; height: 90px; border-radius: 50%; background: var(--yellow); }
+    .shape--2 { right: 8%; top: 18%; width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 86px solid var(--red); animation-delay: -1s; }
+    .shape--3 { left: 12%; bottom: 12%; width: 80px; height: 80px; border-radius: 18px; background: var(--accent); animation-delay: -2s; rotate: 15deg; }
+    .shape--4 { right: 14%; bottom: 16%; width: 120px; height: 34px; border-radius: 999px; background: var(--green); animation-delay: -.5s; rotate: -20deg; }
+    @keyframes jump { 0%, 100% { transform: translateY(0) scale(1, 1); } 45% { transform: translateY(-26px) scale(.96, 1.04); } 55% { transform: translateY(-26px); } 90% { transform: translateY(0) scale(1.06, .94); } }
+    @media (max-width: 700px) { .shape { scale: .6; } }
+    .hero h1 { font-size: clamp(50px, 9vw, 130px); font-weight: 800; line-height: 1; }
+    .hero h1 .c1 { color: var(--red); } .hero h1 .c2 { color: var(--accent); }
+    .hero p { max-width: 540px; margin: 26px auto 36px; font-size: 19px; color: var(--muted); }
+    .hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .btn { box-shadow: 0 6px 0 #1E2A5A; transition: transform .2s, box-shadow .2s, color .4s; }
+    .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #1E2A5A; }
+    .btn--ghost { background: #fff; box-shadow: 0 6px 0 #1E2A5A, inset 0 0 0 2px #1E2A5A; }
+
+    section { padding: 100px 0; }
+    h2 { font-size: clamp(38px, 5.4vw, 72px); font-weight: 800; margin-bottom: 44px; text-align: center; }
+
+    .programs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    @media (max-width: 960px) { .programs { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .programs { grid-template-columns: 1fr; } }
+    .prog { padding: 28px 24px; border-radius: 28px; border: 3px solid var(--fg); background: #fff; box-shadow: 8px 8px 0 var(--fg); }
+    .prog:nth-child(odd) { rotate: -1.5deg; } .prog:nth-child(even) { rotate: 1.5deg; }
+    .prog:hover { rotate: 0deg; }
+    .prog__age { display: inline-block; padding: 6px 12px; border-radius: 999px; color: #fff; font-family: var(--display); font-size: 14px; margin-bottom: 16px; }
+    .prog h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .prog p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+    .prog b { font-family: var(--display); }
+
+    .counts { background: var(--accent); color: #fff; border-radius: 40px; margin: 0 max(12px, 2vw); }
+    .counts .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
+    @media (max-width: 700px) { .counts .wrap { grid-template-columns: 1fr; } }
+    .counts strong { display: block; font-family: var(--display); font-weight: 800; font-size: clamp(54px, 7vw, 90px); color: var(--yellow); line-height: 1; }
+
+    .day { max-width: 760px; margin: 0 auto; }
+    .day__row { display: grid; grid-template-columns: 90px 1fr; gap: 20px; align-items: center; padding: 16px 0; border-bottom: 2px dashed var(--line); }
+    .day__row time { font-family: var(--display); font-size: 22px; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+    .contact { text-align: center; }
+    .contact p { font-size: 20px; color: var(--muted); margin-bottom: 6px; }
+    .contact .btn { margin-top: 26px; background: var(--red); }
+
+    footer { padding: 40px 0 80px; text-align: center; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a href="#top" class="logo"><span>К</span><span>а</span><span>р</span>андаш</a>
+      <a href="#contact" class="btn magnetic" style="padding:12px 20px">Пробный урок</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <span class="shape shape--1" aria-hidden="true"></span>
+      <span class="shape shape--2" aria-hidden="true"></span>
+      <span class="shape shape--3" aria-hidden="true"></span>
+      <span class="shape shape--4" aria-hidden="true"></span>
+      <div class="wrap">
+        <p class="eyebrow reveal">Детский развивающий центр · Астана</p>
+        <h1><span class="line-mask"><span class="c1" data-split>Учимся</span></span><span class="line-mask"><span class="c2" data-split>играя</span></span></h1>
+        <p class="reveal" style="--d:.5s">Подготовка к школе, английский, рисование и робототехника для детей от 3 до 12 лет. Группы до 8 человек.</p>
+        <div class="hero__actions reveal" style="--d:.6s">
+          <a href="#programs" class="btn magnetic">Программы</a>
+          <a href="#contact" class="btn btn--ghost magnetic">Бесплатный пробный урок</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="programs">
+      <div class="wrap">
+        <h2 class="reveal">Программы</h2>
+        <div class="programs">
+          <article class="prog reveal"><span class="prog__age" style="background:var(--red)">3–5 лет</span><h3>Развивайка</h3><p>Моторика, речь, счёт через игру.</p><b>25 000 ₸ / мес</b></article>
+          <article class="prog reveal" style="--d:.08s"><span class="prog__age" style="background:var(--accent)">5–7 лет</span><h3>Подготовка к школе</h3><p>Чтение, письмо, логика.</p><b>30 000 ₸ / мес</b></article>
+          <article class="prog reveal" style="--d:.16s"><span class="prog__age" style="background:var(--green)">6–12 лет</span><h3>Английский</h3><p>Разговорный, с носителем раз в неделю.</p><b>28 000 ₸ / мес</b></article>
+          <article class="prog reveal" style="--d:.24s"><span class="prog__age" style="background:#E8A100">7–12 лет</span><h3>Робототехника</h3><p>Конструируем и программируем роботов.</p><b>32 000 ₸ / мес</b></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="counts">
+      <div class="wrap">
+        <div class="reveal"><strong data-count="8">0</strong>детей в группе максимум</div>
+        <div class="reveal" style="--d:.1s"><strong data-count="600">0</strong>выпускников</div>
+        <div class="reveal" style="--d:.2s"><strong data-count="7">0</strong>лет работаем</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2 class="reveal">Как проходит день</h2>
+        <div class="day">
+          <div class="day__row reveal"><time>09:00</time><span>Встречаем, зарядка и круг знакомства</span></div>
+          <div class="day__row reveal"><time>10:00</time><span>Основное занятие по программе</span></div>
+          <div class="day__row reveal"><time>11:30</time><span>Перекус и прогулка</span></div>
+          <div class="day__row reveal"><time>12:30</time><span>Творчество: рисование или лепка</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <h2 class="reveal">Приходите знакомиться</h2>
+        <p class="reveal">Ул. Примерная, 12 · пн–сб 09:00–19:00</p>
+        <p class="reveal">+7 (700) 000-00-00</p>
+        <a href="#" class="btn magnetic reveal">Записаться на пробный урок</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>© Карандаш · детский центр</footer>
+
+  <div class="template-note">Шаблон · <a href="../">все шаблоны</a></div>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="../shared/motion.js"></script>
+</body>
+</html>

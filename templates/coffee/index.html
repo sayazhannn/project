@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Зерно — кофейня</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,500;0,7..72,700;1,7..72,500&family=Commissioner:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+  <style>
+    /* Кофейня: глубокий зелёный, овсяный фон, оранжевый акцент. Крупная засечковая типографика + меню с отточиями */
+    :root {
+      --bg: #EFE8DA;
+      --fg: #17291F;
+      --muted: #5E6B60;
+      --accent: #D9622B;
+      --green: #1F3B2D;
+      --line: rgba(23, 41, 31, .2);
+      --display: "Literata", Georgia, serif;
+      --body: "Commissioner", system-ui, sans-serif;
+    }
+
+    .nav { padding: 18px 0; }
+    .nav.is-scrolled { background: rgba(239, 232, 218, .85); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--line); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo { font-family: var(--display); font-size: 26px; font-weight: 700; }
+    .logo span { color: var(--accent); }
+    .nav__links { display: flex; gap: 28px; font-size: 15px; }
+    @media (max-width: 720px) { .nav__links { display: none; } }
+
+    .hero { padding: 150px 0 80px; position: relative; overflow: hidden; }
+    .hero .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; }
+    @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } }
+    .hero h1 { font-size: clamp(64px, 11vw, 168px); font-weight: 500; letter-spacing: -.03em; }
+    .hero h1 em { color: var(--accent); }
+    .hero p { max-width: 440px; font-size: 19px; color: var(--muted); margin: 28px 0 36px; }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .cup { position: relative; display: grid; place-items: center; }
+    .cup svg { width: min(380px, 80vw); }
+    .cup__body { fill: var(--green); }
+    .cup__coffee { fill: #6B3E26; }
+    .cup__steam path { fill: none; stroke: var(--fg); stroke-width: 3; stroke-linecap: round; opacity: 0; animation: steam 3s ease-in-out infinite; animation-delay: calc(var(--i) * .6s); }
+    @keyframes steam { 0% { opacity: 0; transform: translateY(10px); } 40% { opacity: .5; } 100% { opacity: 0; transform: translateY(-20px); } }
+    .ring { position: absolute; right: 0; top: 0; width: 140px; height: 140px; animation: spin 18s linear infinite; }
+    .ring text { font: 600 11px var(--body); letter-spacing: 3px; fill: var(--fg); text-transform: uppercase; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .strip { background: var(--green); color: var(--bg); padding: 22px 0; font-family: var(--display); font-style: italic; font-size: clamp(24px, 3.4vw, 40px); }
+    .strip i { color: var(--accent); font-style: normal; }
+
+    section { padding: 120px 0; }
+    .about__text { font-family: var(--display); font-size: clamp(28px, 3.8vw, 50px); line-height: 1.2; max-width: 1000px; }
+
+    .menu h2 { font-size: clamp(44px, 6vw, 84px); margin-bottom: 50px; }
+    .menu__cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 80px; }
+    @media (max-width: 760px) { .menu__cols { grid-template-columns: 1fr; } }
+    .menu__group h3 { font-size: 26px; margin-bottom: 16px; color: var(--accent); }
+    .item { display: flex; align-items: baseline; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .item b { font-weight: 500; }
+    .item small { display: block; color: var(--muted); font-size: 14px; }
+    .item .dots { flex: 1; border-bottom: 1px dotted var(--line); transform: translateY(-4px); }
+    .item .price { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+    .facts { background: var(--green); color: var(--bg); }
+    .facts .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: center; }
+    @media (max-width: 700px) { .facts .wrap { grid-template-columns: 1fr; } }
+    .facts strong { display: block; font-family: var(--display); font-size: clamp(56px, 8vw, 100px); font-weight: 500; color: #F2B48F; line-height: 1; }
+
+    .visit .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    @media (max-width: 760px) { .visit .wrap { grid-template-columns: 1fr; } }
+    .visit h2 { font-size: clamp(40px, 5vw, 70px); margin-bottom: 24px; }
+    .visit dl { margin: 0; }
+    .visit dt { color: var(--muted); font-size: 14px; margin-top: 18px; }
+    .visit dd { margin: 4px 0 0; font-size: 20px; font-weight: 500; }
+
+    footer { padding: 40px 0 80px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a href="#top" class="logo">Зерно<span>.</span></a>
+      <nav class="nav__links"><a href="#about">О нас</a><a href="#menu">Меню</a><a href="#visit">Адрес</a></nav>
+      <a href="#visit" class="btn magnetic" style="padding:12px 22px">Заказать с собой</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow reveal">Кофейня · Астана</p>
+          <h1><span class="line-mask"><span data-split>Кофе,</span></span><span class="line-mask"><em data-split>который</em></span><span class="line-mask"><span data-split>ждут</span></span></h1>
+          <p class="reveal" style="--d:.5s">Обжариваем зерно небольшими партиями и варим так, чтобы хотелось вернуться завтра.</p>
+          <div class="hero__actions reveal" style="--d:.65s">
+            <a href="#menu" class="btn magnetic">Смотреть меню</a>
+            <a href="#visit" class="btn btn--ghost magnetic">Ежедневно 08:00–22:00</a>
+          </div>
+        </div>
+        <div class="cup reveal" style="--d:.3s" data-speed="-0.06">
+          <svg viewBox="0 0 300 300" aria-hidden="true">
+            <g class="cup__steam"><path d="M120 70 C110 50 135 40 122 18" style="--i:0"/><path d="M150 62 C140 42 165 32 152 10" style="--i:1"/><path d="M180 70 C170 50 195 40 182 18" style="--i:2"/></g>
+            <path class="cup__body" d="M60 100 H240 L222 240 C220 256 206 268 190 268 H110 C94 268 80 256 78 240 Z"/>
+            <path d="M240 130 C275 130 275 190 232 190" fill="none" stroke="#1F3B2D" stroke-width="14"/>
+            <ellipse class="cup__coffee" cx="150" cy="100" rx="90" ry="14"/>
+          </svg>
+          <svg class="ring" viewBox="0 0 140 140" aria-hidden="true">
+            <defs><path id="c" d="M70 70 m-52 0 a52 52 0 1 1 104 0 a52 52 0 1 1 -104 0"/></defs>
+            <text><textPath href="#c">свежая обжарка · свежая обжарка ·</textPath></text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <div class="strip marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Эспрессо</span><i>●</i><span>Фильтр</span><i>●</i><span>Раф</span><i>●</i><span>Матча</span><i>●</i><span>Круассаны</span><i>●</i>
+        <span>Эспрессо</span><i>●</i><span>Фильтр</span><i>●</i><span>Раф</span><i>●</i><span>Матча</span><i>●</i><span>Круассаны</span><i>●</i>
+      </div>
+    </div>
+
+    <section id="about">
+      <div class="wrap">
+        <p class="eyebrow reveal" style="margin-bottom:24px">О нас</p>
+        <p class="about__text" data-words>Маленькая кофейня у дома. Здесь знают ваш заказ, не торопят с ноутбуком и всегда держат пару свежих круассанов к утреннему кофе.</p>
+      </div>
+    </section>
+
+    <section class="menu" id="menu">
+      <div class="wrap">
+        <h2 class="reveal">Меню</h2>
+        <div class="menu__cols">
+          <div class="menu__group reveal">
+            <h3>Кофе</h3>
+            <div class="item"><span><b>Эспрессо</b></span><span class="dots"></span><span class="price">900 ₸</span></div>
+            <div class="item"><span><b>Капучино</b><small>250 / 350 мл</small></span><span class="dots"></span><span class="price">1 300 ₸</span></div>
+            <div class="item"><span><b>Флэт уайт</b></span><span class="dots"></span><span class="price">1 400 ₸</span></div>
+            <div class="item"><span><b>Раф лавандовый</b></span><span class="dots"></span><span class="price">1 700 ₸</span></div>
+          </div>
+          <div class="menu__group reveal" style="--d:.1s">
+            <h3>К кофе</h3>
+            <div class="item"><span><b>Круассан</b><small>классический / миндальный</small></span><span class="dots"></span><span class="price">1 100 ₸</span></div>
+            <div class="item"><span><b>Сырники</b></span><span class="dots"></span><span class="price">2 200 ₸</span></div>
+            <div class="item"><span><b>Чизкейк</b></span><span class="dots"></span><span class="price">1 900 ₸</span></div>
+            <div class="item"><span><b>Сэндвич с индейкой</b></span><span class="dots"></span><span class="price">2 400 ₸</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="facts">
+      <div class="wrap">
+        <div class="reveal"><strong data-count="12">0</strong>сортов зерна в году</div>
+        <div class="reveal" style="--d:.1s"><strong data-count="340">0</strong>чашек в день</div>
+        <div class="reveal" style="--d:.2s"><strong data-count="4.9" data-decimals="1">0</strong>оценка гостей</div>
+      </div>
+    </section>
+
+    <section class="visit" id="visit">
+      <div class="wrap">
+        <div class="reveal">
+          <p class="eyebrow">Приходите</p>
+          <h2>Ул. Примерная, 10</h2>
+          <a href="#" class="btn magnetic">Открыть в 2ГИС</a>
+        </div>
+        <dl class="reveal" style="--d:.1s">
+          <dt>Часы работы</dt><dd>Ежедневно 08:00–22:00</dd>
+          <dt>Телефон</dt><dd>+7 (700) 000-00-00</dd>
+          <dt>Instagram</dt><dd>@zerno.coffee</dd>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">© Зерно, Астана</div></footer>
+
+  <div class="template-note">Шаблон · <a href="../">все шаблоны</a></div>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="../shared/motion.js"></script>
+</body>
+</html>

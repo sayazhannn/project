@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ремонт Про — ремонт квартир под ключ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+  <style>
+    /* Ремонт квартир: бетон, графит, строительный оранжевый, чертёжная сетка. Слайдер «до/после» и калькулятор стоимости */
+    :root {
+      --bg: #E9E7E3;
+      --fg: #1E1E1E;
+      --muted: #67635D;
+      --accent: #F25C05;
+      --paper: #F5F4F1;
+      --line: rgba(30, 30, 30, .14);
+      --display: "Montserrat", system-ui, sans-serif;
+      --body: "Montserrat", system-ui, sans-serif;
+      --radius: 8px;
+    }
+    body { font-weight: 500; font-size: 16px; }
+
+    .nav { padding: 16px 0; }
+    .nav.is-scrolled { background: rgba(233, 231, 227, .92); backdrop-filter: blur(10px); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo { font-weight: 800; font-size: 20px; text-transform: uppercase; }
+    .logo i { color: var(--accent); font-style: normal; }
+
+    .hero { position: relative; padding: 140px 0 90px; overflow: hidden;
+      background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 40px 40px; }
+    .hero h1 { font-size: clamp(42px, 7.6vw, 112px); font-weight: 800; text-transform: uppercase; line-height: .98; letter-spacing: -.02em; }
+    .hero h1 .o { color: var(--accent); }
+    .hero p { max-width: 520px; font-size: 18px; color: var(--muted); margin: 26px 0 34px; }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .ruler { position: absolute; right: max(20px, 5vw); top: 130px; display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: var(--muted); }
+    .ruler span { display: flex; align-items: center; gap: 8px; }
+    .ruler span::before { content: ""; width: 24px; height: 2px; background: var(--fg); transform-origin: left; animation: tick 2s var(--ease) infinite; animation-delay: calc(var(--i) * .15s); }
+    @keyframes tick { 0%, 100% { transform: scaleX(.4); } 50% { transform: scaleX(1); } }
+    @media (max-width: 860px) { .ruler { display: none; } }
+
+    section { padding: 100px 0; }
+    h2 { font-size: clamp(34px, 5vw, 66px); font-weight: 800; text-transform: uppercase; margin-bottom: 40px; }
+
+    .ba { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; user-select: none; touch-action: pan-y; }
+    .ba__side { position: absolute; inset: 0; display: grid; place-items: center; }
+    .ba__before { background: repeating-linear-gradient(45deg, #9C968D 0 20px, #A8A299 20px 40px); }
+    .ba__after { background: linear-gradient(180deg, #F5F0E8 0 62%, #C8A27A 62% 100%); clip-path: inset(0 0 0 var(--pos, 50%)); }
+    .ba__after::before { content: ""; position: absolute; left: 18%; top: 18%; width: 22%; height: 30%; border: 10px solid #fff; background: #BFD5E0; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, .3); }
+    .ba__after::after { content: ""; position: absolute; right: 14%; bottom: 30%; width: 34%; height: 18%; border-radius: 14px 14px 4px 4px; background: #5E6B5A; }
+    .ba__label { position: absolute; top: 16px; padding: 6px 12px; border-radius: 6px; background: var(--fg); color: #fff; font-size: 13px; z-index: 2; }
+    .ba__label--l { left: 16px; } .ba__label--r { right: 16px; background: var(--accent); }
+    .ba__handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 4px; margin-left: -2px; background: #fff; z-index: 3; }
+    .ba__handle::after { content: "↔"; position: absolute; top: 50%; left: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-weight: 800; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); }
+    .ba input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 4; margin: 0; }
+
+    .calc { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; }
+    @media (max-width: 860px) { .calc { grid-template-columns: 1fr; } }
+    .calc__form { padding: 32px; border-radius: 16px; background: var(--paper); display: grid; gap: 24px; }
+    .calc label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+    .calc input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .calc output { font-weight: 800; color: var(--fg); }
+    .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .opts button { padding: 12px 18px; border-radius: 8px; border: 2px solid var(--line); background: #fff; cursor: pointer; font-weight: 700; transition: border-color .3s, background .3s, color .3s; }
+    .opts button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .calc__result { padding: 32px; border-radius: 16px; background: var(--fg); color: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 30px; }
+    .calc__result small { opacity: .6; }
+    .calc__sum { font-size: clamp(36px, 4.6vw, 58px); font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
+    .calc__result .btn { --btn-hover: #fff; --btn-hover-text: #1E1E1E; }
+
+    .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    @media (max-width: 960px) { .steps { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .steps { grid-template-columns: 1fr; } }
+    .step { padding: 22px; border-top: 4px solid var(--accent); background: var(--paper); border-radius: 0 0 10px 10px; }
+    .step b { display: block; font-size: 30px; font-weight: 800; color: var(--accent); }
+    .step p { font-size: 14px; color: var(--muted); }
+
+    .contact { background: var(--accent); color: #fff; }
+    .contact .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; }
+    .contact h2 { margin: 0 0 8px; }
+    .contact .btn { --accent: #1E1E1E; --btn-hover: #fff; --btn-hover-text: #1E1E1E; }
+
+    footer { padding: 40px 0 80px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a href="#top" class="logo">Ремонт<i>Про</i></a>
+      <a href="#calc" class="btn magnetic" style="padding:12px 20px">Рассчитать</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="ruler" aria-hidden="true"><span style="--i:0">0 м</span><span style="--i:1">1 м</span><span style="--i:2">2 м</span><span style="--i:3">3 м</span><span style="--i:4">4 м</span></div>
+      <div class="wrap">
+        <p class="eyebrow reveal">Ремонт квартир под ключ · Астана</p>
+        <h1><span class="line-mask"><span data-split>Ремонт</span></span><span class="line-mask"><span class="o" data-split>по смете,</span></span><span class="line-mask"><span data-split>в срок</span></span></h1>
+        <p class="reveal" style="--d:.5s">Фиксируем цену в договоре. Каждую неделю — фотоотчёт, а за каждый день просрочки платим неустойку.</p>
+        <div class="hero__actions reveal" style="--d:.6s">
+          <a href="#calc" class="btn magnetic">Рассчитать стоимость</a>
+          <a href="#works" class="btn btn--ghost magnetic">До и после</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="works">
+      <div class="wrap">
+        <h2 class="reveal">До и после</h2>
+        <div class="ba reveal" id="ba">
+          <div class="ba__side ba__before"></div>
+          <div class="ba__side ba__after"></div>
+          <span class="ba__label ba__label--l">До</span>
+          <span class="ba__label ba__label--r">После</span>
+          <div class="ba__handle"></div>
+          <input type="range" id="ba-range" min="0" max="100" value="50" aria-label="Сравнить до и после">
+        </div>
+        <p style="margin-top:14px;color:var(--muted);font-size:14px">Сюда — фото реальных объектов. Потяните ползунок.</p>
+      </div>
+    </section>
+
+    <section id="calc">
+      <div class="wrap">
+        <h2 class="reveal">Калькулятор</h2>
+        <div class="calc">
+          <div class="calc__form reveal">
+            <div>
+              <label for="area">Площадь квартиры: <output id="area-out">60</output> м²</label>
+              <input type="range" id="area" min="20" max="200" value="60">
+            </div>
+            <div>
+              <label>Тип ремонта</label>
+              <div class="opts" id="type">
+                <button type="button" data-rate="45000" aria-pressed="false">Косметический</button>
+                <button type="button" data-rate="75000" aria-pressed="true">Капитальный</button>
+                <button type="button" data-rate="110000" aria-pressed="false">Дизайнерский</button>
+              </div>
+            </div>
+            <div>
+              <label>Дом</label>
+              <div class="opts" id="house">
+                <button type="button" data-k="1" aria-pressed="true">Вторичка</button>
+                <button type="button" data-k="1.15" aria-pressed="false">Новостройка (черновая)</button>
+              </div>
+            </div>
+          </div>
+          <div class="calc__result reveal" style="--d:.1s">
+            <div>
+              <small>Примерная стоимость работ</small>
+              <div class="calc__sum" id="sum">—</div>
+              <small id="term"></small>
+            </div>
+            <a href="#contact" class="btn magnetic">Получить точную смету</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="wrap">
+        <h2 class="reveal">Этапы</h2>
+        <div class="steps">
+          <div class="step reveal"><b>01</b>Замер и смета<p>Бесплатно, за 1 день</p></div>
+          <div class="step reveal" style="--d:.06s"><b>02</b>Договор<p>Фиксированная цена</p></div>
+          <div class="step reveal" style="--d:.12s"><b>03</b>Черновые работы<p>Электрика, сантехника, стяжка</p></div>
+          <div class="step reveal" style="--d:.18s"><b>04</b>Чистовая отделка<p>Плитка, полы, покраска</p></div>
+          <div class="step reveal" style="--d:.24s"><b>05</b>Сдача<p>Гарантия 2 года</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Бесплатный замер</h2>
+          <p>+7 (700) 000-00-00 · ежедневно 09:00–20:00</p>
+        </div>
+        <a href="#" class="btn magnetic reveal">Вызвать замерщика</a>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">© Ремонт Про · ремонт квартир в Астане</div></footer>
+
+  <div class="template-note">Шаблон · <a href="../">все шаблоны</a></div>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="../shared/motion.js"></script>
+  <script>
+    // Слайдер «до/после»
+    const ba = document.getElementById('ba');
+    const baRange = document.getElementById('ba-range');
+    baRange.addEventListener('input', () => ba.style.setProperty('--pos', baRange.value + '%'));
+
+    // Калькулятор: площадь × ставка за м² × коэффициент дома
+    const area = document.getElementById('area');
+    const areaOut = document.getElementById('area-out');
+    const sum = document.getElementById('sum');
+    const term = document.getElementById('term');
+    let shown = 0;
+
+    const pick = (group) => {
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b === btn));
+        calc();
+      });
+    };
+
+    const calc = () => {
+      const rate = +document.querySelector('#type [aria-pressed="true"]').dataset.rate;
+      const k = +document.querySelector('#house [aria-pressed="true"]').dataset.k;
+      const target = Math.round(area.value * rate * k / 1000) * 1000;
+      areaOut.textContent = area.value;
+      term.textContent = 'Срок — около ' + Math.max(4, Math.round(area.value / 8)) + ' недель';
+      // Плавно докручиваем сумму до нового значения
+      const from = shown;
+      const t0 = performance.now();
+      const tick = (now) => {
+        const p = Math.min((now - t0) / 600, 1);
+        shown = Math.round(from + (target - from) * (1 - Math.pow(1 - p, 3)));
+        sum.textContent = shown.toLocaleString('ru-RU') + ' ₸';
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    pick(document.getElementById('type'));
+    pick(document.getElementById('house'));
+    area.addEventListener('input', calc);
+    calc();
+  </script>
+</body>
+</html>

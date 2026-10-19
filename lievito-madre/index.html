@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lievito Madre — пекарня в Астане</title>
+  <meta name="description" content="Lievito Madre — пекарня в Астане: завтраки весь день, сытные обеды и выпечка собственного цеха. Проспект Кабанбай батыра, 63.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="is-loading">
+
+  <!-- Прелоадер -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__mark">
+      <svg viewBox="0 0 120 120" class="loader__svg">
+        <circle cx="60" cy="60" r="52" />
+      </svg>
+      <span>LM</span>
+    </div>
+  </div>
+
+  <div class="cursor" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a href="#top" class="nav__logo">Lievito <em>Madre</em></a>
+    <nav class="nav__links">
+      <a href="#about">О нас</a>
+      <a href="#menu">Меню</a>
+      <a href="#visit">Как найти</a>
+    </nav>
+    <a href="https://2gis.kz/astana/firm/70000001105704750" target="_blank" rel="noopener" class="btn btn--small magnetic">Маршрут</a>
+  </header>
+
+  <main id="top">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero__bg" aria-hidden="true">
+        <span class="blob blob--1" data-speed="0.15"></span>
+        <span class="blob blob--2" data-speed="-0.1"></span>
+        <span class="blob blob--3" data-speed="0.25"></span>
+      </div>
+
+      <div class="hero__content">
+        <p class="eyebrow reveal">Пекарня · Астана · Нура</p>
+        <h1 class="hero__title">
+          <span class="line"><span class="split">Lievito</span></span>
+          <span class="line"><span class="split italic">Madre</span></span>
+        </h1>
+        <p class="hero__lead reveal" style="--d:.9s">Завтраки весь день, сытные обеды и&nbsp;выпечка собственного цеха. Неспешное место в&nbsp;стороне от&nbsp;шумных маршрутов.</p>
+        <div class="hero__actions reveal" style="--d:1.05s">
+          <a href="#menu" class="btn magnetic">Что попробовать</a>
+          <a href="#visit" class="btn btn--ghost magnetic">10:00 — 20:00</a>
+        </div>
+      </div>
+
+      <div class="hero__art" data-speed="-0.08" aria-hidden="true">
+        <svg viewBox="0 0 400 400" class="loaf">
+          <defs>
+            <radialGradient id="crust" cx="40%" cy="35%" r="70%">
+              <stop offset="0%" stop-color="#E8B57A"/>
+              <stop offset="55%" stop-color="#C47F3E"/>
+              <stop offset="100%" stop-color="#8A4E22"/>
+            </radialGradient>
+          </defs>
+          <ellipse class="loaf__shadow" cx="200" cy="330" rx="140" ry="18"/>
+          <path class="loaf__body" d="M60 250 C60 150 130 95 200 95 C270 95 340 150 340 250 C340 300 300 318 200 318 C100 318 60 300 60 250 Z" fill="url(#crust)"/>
+          <path class="loaf__cut" d="M120 175 Q160 150 190 170"/>
+          <path class="loaf__cut" d="M165 140 Q205 118 240 140" style="--i:1"/>
+          <path class="loaf__cut" d="M215 180 Q250 160 285 182" style="--i:2"/>
+          <g class="steam">
+            <path d="M170 80 C160 60 185 50 172 28"/>
+            <path d="M205 72 C195 50 220 40 207 15" style="--i:1"/>
+            <path d="M240 82 C230 60 255 50 242 30" style="--i:2"/>
+          </g>
+        </svg>
+        <div class="badge">
+          <strong>5.0</strong>
+          <span>★★★★★</span>
+          <small>рейтинг 2ГИС</small>
+        </div>
+      </div>
+
+      <a href="#about" class="scroll-hint" aria-label="Листать вниз"><span></span></a>
+    </section>
+
+    <!-- Бегущая строка -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Завтраки весь день</span><i>✦</i>
+        <span>Сытные обеды</span><i>✦</i>
+        <span>Выпечка собственного цеха</span><i>✦</i>
+        <span>Живая закваска</span><i>✦</i>
+        <span>Завтраки весь день</span><i>✦</i>
+        <span>Сытные обеды</span><i>✦</i>
+        <span>Выпечка собственного цеха</span><i>✦</i>
+        <span>Живая закваска</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- О нас -->
+    <section class="about" id="about">
+      <div class="about__label reveal">О нас</div>
+      <p class="about__text words">
+        <em>Lievito madre</em> — так в&nbsp;Италии называют живую закваску, на&nbsp;которой веками пекут хлеб. Медленное брожение, мягкий мякиш и&nbsp;хрустящая корочка — с&nbsp;этой идеи начинается наша пекарня.
+      </p>
+      <div class="about__grid">
+        <div class="about__card reveal">
+          <span class="num">01</span>
+          <h3>Свой цех</h3>
+          <p>Выпечку готовим сами — каждый день, в&nbsp;собственном цехе.</p>
+        </div>
+        <div class="about__card reveal" style="--d:.1s">
+          <span class="num">02</span>
+          <h3>Мягкий хлеб</h3>
+          <p>Гости отмечают мягкий хлеб и&nbsp;большие сытные сэндвичи.</p>
+        </div>
+        <div class="about__card reveal" style="--d:.2s">
+          <span class="num">03</span>
+          <h3>Тихое место</h3>
+          <p>В&nbsp;стороне от&nbsp;туристических маршрутов — чтобы спокойно позавтракать.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Меню -->
+    <section class="menu" id="menu">
+      <div class="section-head">
+        <p class="eyebrow reveal">Меню</p>
+        <h2 class="reveal">Что у&nbsp;нас <em>попробовать</em></h2>
+      </div>
+
+      <div class="menu__list">
+        <article class="dish tilt reveal">
+          <div class="dish__art dish__art--1" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="44" class="plate"/><circle cx="60" cy="60" r="20" class="yolk"/><path d="M30 60 Q60 20 90 60 Q60 100 30 60Z" class="white"/><circle cx="60" cy="60" r="12" class="yolk"/></svg>
+          </div>
+          <div class="dish__body">
+            <h3>Завтраки весь день</h3>
+            <p>Не нужно успевать до&nbsp;полудня — завтрак можно заказать в&nbsp;любое время, пока мы открыты.</p>
+          </div>
+          <span class="dish__arrow">→</span>
+        </article>
+
+        <article class="dish tilt reveal">
+          <div class="dish__art dish__art--2" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><rect x="18" y="38" width="84" height="16" rx="8" class="bread"/><rect x="20" y="54" width="80" height="8" rx="3" class="leaf"/><rect x="20" y="62" width="80" height="7" rx="3" class="tomato"/><rect x="18" y="69" width="84" height="16" rx="8" class="bread"/></svg>
+          </div>
+          <div class="dish__body">
+            <h3>Сэндвичи</h3>
+            <p>Большие и&nbsp;сытные, на&nbsp;нашем мягком хлебе.</p>
+          </div>
+          <span class="dish__arrow">→</span>
+        </article>
+
+        <article class="dish tilt reveal">
+          <div class="dish__art dish__art--3" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><ellipse cx="60" cy="70" rx="44" ry="26" class="plate"/><ellipse cx="60" cy="64" rx="34" ry="16" class="soup"/><circle cx="48" cy="62" r="4" class="leaf"/><circle cx="68" cy="66" r="3" class="leaf"/></svg>
+          </div>
+          <div class="dish__body">
+            <h3>Сытные обеды</h3>
+            <p>Горячее, чтобы сделать перерыв посреди дня.</p>
+          </div>
+          <span class="dish__arrow">→</span>
+        </article>
+
+        <article class="dish tilt reveal">
+          <div class="dish__art dish__art--4" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><path d="M20 78 Q30 40 60 36 Q90 40 100 78 Q60 92 20 78Z" class="crois"/><path d="M42 44 Q48 64 44 84M60 38 L60 88M78 44 Q72 64 76 84" class="crois-line"/></svg>
+          </div>
+          <div class="dish__body">
+            <h3>Выпечка</h3>
+            <p>Хлеб и&nbsp;сладкая выпечка из&nbsp;собственного цеха.</p>
+          </div>
+          <span class="dish__arrow">→</span>
+        </article>
+      </div>
+      <p class="menu__note reveal">Актуальное меню и&nbsp;цены — в&nbsp;заведении и&nbsp;на&nbsp;карточке 2ГИС.</p>
+    </section>
+
+    <!-- Цифры -->
+    <section class="stats">
+      <div class="stat reveal">
+        <strong><span class="count" data-to="5" data-decimals="1">0</span></strong>
+        <span>средняя оценка в&nbsp;2ГИС</span>
+      </div>
+      <div class="stat reveal" style="--d:.1s">
+        <strong><span class="count" data-to="150">0</span>+</strong>
+        <span>отзывов гостей</span>
+      </div>
+      <div class="stat reveal" style="--d:.2s">
+        <strong><span class="count" data-to="10">0</span> ч</strong>
+        <span>открыты каждый день</span>
+      </div>
+      <div class="stat reveal" style="--d:.3s">
+        <strong>≈<span class="count" data-to="3000" data-sep="1">0</span> ₸</strong>
+        <span>средний чек</span>
+      </div>
+    </section>
+
+    <!-- Как найти -->
+    <section class="visit" id="visit">
+      <div class="visit__card reveal">
+        <div class="visit__info">
+          <p class="eyebrow">Ждём в гости</p>
+          <h2>Проспект Кабанбай батыра,&nbsp;63</h2>
+          <ul class="visit__list">
+            <li><span>Район</span><b>Нура, Астана</b></li>
+            <li><span>Часы</span><b>Ежедневно 10:00 — 20:00</b></li>
+            <li><span>Средний чек</span><b>около 3 000 ₸</b></li>
+          </ul>
+          <div class="hero__actions">
+            <a href="https://2gis.kz/astana/firm/70000001105704750" target="_blank" rel="noopener" class="btn magnetic">Открыть в 2ГИС</a>
+          </div>
+        </div>
+        <div class="visit__map" aria-hidden="true">
+          <svg viewBox="0 0 300 300">
+            <path class="road" d="M-10 120 L310 90"/>
+            <path class="road" d="M-10 220 L310 200"/>
+            <path class="road" d="M110 -10 L140 310"/>
+            <path class="road road--thin" d="M220 -10 L230 310"/>
+            <path class="river" d="M-10 40 C80 70 200 10 310 50"/>
+            <g class="pin">
+              <circle cx="178" cy="150" r="30" class="pin__pulse"/>
+              <path d="M178 112 C196 112 206 126 206 140 C206 160 178 186 178 186 C178 186 150 160 150 140 C150 126 160 112 178 112Z" class="pin__body"/>
+              <circle cx="178" cy="140" r="9" fill="#FFF8EE"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer__big">Lievito <em>Madre</em></div>
+    <div class="footer__row">
+      <span>Пекарня · Астана</span>
+      <span>Концепт-сайт. Данные — из открытых источников (2ГИС).</span>
+      <a href="#top">Наверх ↑</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

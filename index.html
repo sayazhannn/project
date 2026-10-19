@@ -3,26 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Тестовый сайт</title>
+  <title>Мои сайты</title>
   <style>
     body {
       margin: 0;
       min-height: 100vh;
       display: grid;
       place-items: center;
+      padding: 24px;
+      box-sizing: border-box;
       font-family: system-ui, sans-serif;
       background: linear-gradient(135deg, #6366f1, #ec4899);
       color: #fff;
-      text-align: center;
     }
-    h1 { font-size: 2.5rem; margin: 0 0 .5rem; }
-    p { opacity: .9; }
+    main { width: min(560px, 100%); }
+    h1 { font-size: 2.5rem; margin: 0 0 1.5rem; text-align: center; }
+    a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      text-decoration: none;
+      transition: background .3s, transform .3s;
+    }
+    a:hover { background: rgba(255, 255, 255, .25); transform: translateY(-2px); }
+    small { opacity: .8; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Привет! 👋</h1>
-    <p>Если вы видите эту страницу, GitHub и Vercel работают вместе.</p>
+    <h1>Мои сайты</h1>
+    <a href="/lievito-madre/">
+      <span><b>Lievito Madre</b><br><small>Пекарня, Астана</small></span>
+      <span>→</span>
+    </a>
   </main>
 </body>
 </html>

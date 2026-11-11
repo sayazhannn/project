@@ -1,61 +1,42 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><title>Аромадиффузор XO — карточка</title>
-<link rel="stylesheet" href="../card-base.css">
+<html lang="ru"><head><meta charset="utf-8"><title>Аромадиффузор XO — карточка WB</title>
+<link rel="stylesheet" href="../wb-base.css">
 <style>
-.card{
-  --ink:#F6EFE7;--ink-soft:#BFB2A5;--accent:#E9A85C;
-  --wall:radial-gradient(620px 560px at 64% 50%,#5A524C 0%,#37312D 45%,#1C1917 100%);
-  --horizon:905px;--floor:linear-gradient(#2E2926,#211D1B 60%,#181513);
-  --edge:rgba(255,220,180,.18);
-  --cast:drop-shadow(-28px 26px 26px rgba(0,0,0,.55)) drop-shadow(0 6px 10px rgba(0,0,0,.4));
-  --contact:.85;
-  --chip-bg:rgba(255,255,255,.08);--chip-ink:#E8DCCF;--chip-line:rgba(255,255,255,.14);
-  --tile:rgba(255,255,255,.07);--tile-line:rgba(255,255,255,.12);--tile-shadow:rgba(0,0,0,.35);
-  --ic-bg:linear-gradient(145deg,#F2BC78,#C9823A);--ic-ink:#2A1C10;
-  --strip:linear-gradient(135deg,#F2BC78,#D48D45);--strip-ink:#22170D;--strip-accent:#fff;--strip-shadow:rgba(212,141,69,.3);
-  --badge:linear-gradient(145deg,#F6F0E8,#D9CFC3);--badge-ink:#22170D;--badge-shadow:rgba(0,0,0,.45);--badge-ring:rgba(233,168,92,.55);
-}
-.head{position:absolute;left:56px;top:56px;right:56px;z-index:6}
-h1{font-size:62px;margin-top:24px}
-.sub{margin-top:16px}
-.product{left:368px;top:330px;width:480px}
-.list{position:absolute;left:48px;top:440px;width:300px;display:flex;flex-direction:column;gap:16px;z-index:8}
-.f h3{color:#fff}
-.ic svg{stroke-width:2.2}
+.card{--ink:#2B1D12;--ink-soft:#7A6250;--accent:#C47A2C;--accent-shadow:rgba(196,122,44,.4);
+  --sticker:linear-gradient(145deg,#2E2219,#120C08);
+  --bar:linear-gradient(135deg,#3A2716,#20150B);--bar-ink:#fff;
+  --cast:drop-shadow(-28px 26px 26px rgba(70,40,15,.38)) drop-shadow(0 8px 10px rgba(60,30,10,.25));--contact:.65}
+.bg{height:1320px;left:-600px;top:-80px;filter:saturate(1.05) brightness(1.02)}
+.veil.top{top:0;height:330px;background:linear-gradient(rgba(255,247,238,.9),rgba(255,247,238,.55) 55%,rgba(255,247,238,0))}
+.veil.bot{bottom:0;height:260px;background:linear-gradient(rgba(70,40,15,0),rgba(70,40,15,.3))}
+h1{font-size:64px}
+.product{left:170px;top:300px;width:560px}
 </style></head>
 <body>
 <div class="card">
-  <div class="wall"></div>
-  <div class="spot" style="width:520px;height:520px;left:350px;top:330px;background:rgba(255,200,140,.16)"></div>
-  <div class="floor"></div>
-  <div class="spot" style="width:520px;height:120px;left:350px;top:930px;background:rgba(255,190,120,.08)"></div>
+  <img class="bg" src="bg.jpg" alt="">
+  <div class="veil top"></div><div class="veil bot"></div>
 
   <div class="head">
-    <div class="chip"><i></i>Аромат для дома</div>
-    <h1>Аромадиффузор<br><span>The Infinity</span></h1>
-    <p class="sub">XO home perfume · 50 мл</p>
+    <h1>Аромат<br><span class="a">уюта дома</span></h1>
+    <div class="tag">диффузор The Infinity</div>
   </div>
 
-  <div class="list">
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></div><div><h3>До 30 дней</h3><p>Аромат без огня и розеток</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 21L10 3M10 21l4-18M14 21l4-18"/></svg></div><div><h3>Ротанговые палочки</h3><p>Регулируйте интенсивность</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 10.5a6 6 0 0 1-12 0C6 10 9 7 12 3z"/></svg></div><div><h3>Тёплый шлейф</h3><p>Древесно-пряные ноты</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-2-4-6-4-6-1s6 1 6 1 6 2 6-1-4-3-6 1z"/></svg></div><div><h3>Подарочная коробка</h3><p>Стильно в любом интерьере</p></div></div>
-  </div>
-
-  <div class="ambient" style="left:340px;top:930px;width:540px;height:100px"></div>
-  <div class="contact" style="left:380px;top:968px;width:260px;height:30px"></div>
-  <div class="contact" style="left:670px;top:968px;width:150px;height:30px"></div>
+  <div class="ambient" style="left:160px;top:960px;width:600px;height:100px"></div>
+  <div class="contact" style="left:200px;top:990px;width:300px;height:34px"></div>
+  <div class="contact" style="left:510px;top:990px;width:200px;height:34px"></div>
   <div class="product"><img src="diffuser.png" alt="Аромадиффузор XO The Infinity"></div>
 
-  <div class="badge" style="right:44px;top:330px;width:120px;height:120px"><div class="n" style="font-size:34px">50</div><div class="u">МЛ</div></div>
+  <div class="sticker" style="right:40px;top:300px;width:140px;height:140px"><b style="font-size:40px">50</b><span>мл</span></div>
 
-  <div class="strip">
-    <div class="it"><div class="k">до <em>30</em> дней</div><div class="v">непрерывного аромата</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k"><em>5</em> палочек</div><div class="v">в комплекте</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">до <em>20</em> м²</div><div class="v">площадь помещения</div></div>
+  <div class="pill" style="right:28px;top:520px"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></div><div>до 30 дней<small>аромата</small></div></div>
+  <div class="pill" style="left:28px;top:430px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6v10H3z"/><path d="M9 20v-6h6v6"/></svg></div><div>до 20 м²<small>площадь</small></div></div>
+  <div class="pill" style="left:28px;top:820px"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-2-4-6-4-6-1s6 1 6 1 6 2 6-1-4-3-6 1z"/></svg></div><div>В подарочной<small>коробке</small></div></div>
+
+  <div class="bar">
+    <div><b>5 палочек</b><span>ротанг</span></div>
+    <div><b>Без огня</b><span>безопасно</span></div>
+    <div><b>Древесный</b><span>тёплый шлейф</span></div>
   </div>
 </div>
 </body></html>

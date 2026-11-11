@@ -1,66 +1,45 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><title>Chance Eau Tendre — карточка</title>
-<link rel="stylesheet" href="../card-base.css">
+<html lang="ru"><head><meta charset="utf-8"><title>Chance Eau Tendre — карточка WB</title>
+<link rel="stylesheet" href="../wb-base.css">
 <style>
-.card{
-  --ink:#2A1736;--ink-soft:#6B5577;--accent:#A93FC4;--gold:#B8914F;
-  --wall:radial-gradient(760px 560px at 66% 50%,#FFFFFF 0%,#F4EAF8 45%,#E6D5EE 100%);
-  --horizon:850px;--floor:linear-gradient(#E4D1EC,#D7BFE3 60%,#CDB2DB);
-  --edge:rgba(255,255,255,.8);
-  --cast:drop-shadow(30px 28px 26px rgba(80,30,100,.22)) drop-shadow(0 6px 10px rgba(60,20,80,.16));
-  --contact:.45;
-  --chip-bg:#fff;--chip-ink:#6B5577;--chip-line:rgba(169,63,196,.2);
-  --tile:rgba(255,255,255,.74);--tile-line:rgba(255,255,255,.95);--tile-shadow:rgba(90,40,120,.13);
-  --ic-bg:linear-gradient(145deg,#F6E6FB,#E7CDF2);--ic-ink:#8E2FAA;
-  --strip:#2A1736;--strip-ink:#fff;--strip-accent:#E7A8FF;--strip-shadow:rgba(42,23,54,.3);
-  --badge:linear-gradient(145deg,#D7B26E,#A9803C);--badge-ink:#fff;--badge-shadow:rgba(169,128,60,.4);--badge-ring:rgba(184,145,79,.5);
-}
-.head{position:absolute;left:56px;top:56px;right:56px;z-index:6}
-h1{font-size:70px;margin-top:24px}
-.sub{margin-top:16px}
-.product{left:340px;top:500px;width:525px}
-.refl{position:absolute;left:340px;top:912px;width:525px;z-index:1;opacity:.22;transform:scaleY(-1);
-  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 28%);mask-image:linear-gradient(to top,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 28%)}
+.card{--ink:#2C1438;--ink-soft:#6E5578;--accent:#B03FC9;--accent-shadow:rgba(176,63,201,.4);
+  --sticker:linear-gradient(145deg,#E3BF77,#A7782F);
+  --bar:linear-gradient(135deg,#3B1A4A,#22102C);--bar-ink:#fff;
+  --cast:drop-shadow(26px 24px 24px rgba(60,30,60,.32)) drop-shadow(0 8px 10px rgba(50,20,50,.22));--contact:.5}
+.bg{width:1080px;left:-150px;top:-170px;transform:scaleX(-1);filter:saturate(1.08) brightness(1.04)}
+.veil.top{top:0;height:340px;background:linear-gradient(rgba(255,248,252,.92),rgba(255,248,252,.6) 55%,rgba(255,248,252,0))}
+.veil.bot{bottom:0;height:300px;background:linear-gradient(rgba(70,30,80,0),rgba(70,30,80,.3))}
+h1{font-size:76px}
+.product{left:236px;top:478px;width:650px}
+.refl{position:absolute;left:236px;top:990px;width:650px;z-index:3;opacity:.2;transform:scaleY(-1);
+  -webkit-mask-image:linear-gradient(to top,#000 0%,transparent 22%);mask-image:linear-gradient(to top,#000 0%,transparent 22%)}
 .refl img{width:100%;display:block}
-.notes{position:absolute;left:48px;top:410px;width:290px;z-index:8;display:flex;flex-direction:column;gap:14px}
-.notes .ttl{font-family:'Unbounded';font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-left:4px}
-.note{padding:16px 18px;border-radius:22px;background:var(--tile);border:1px solid var(--tile-line);box-shadow:0 14px 30px var(--tile-shadow);backdrop-filter:blur(14px);display:flex;gap:14px;align-items:center}
-.note .lvl{flex:none;width:50px;height:50px;border-radius:15px;background:var(--ic-bg);display:grid;place-items:center;font-family:'Unbounded';font-weight:900;font-size:18px;color:var(--ic-ink)}
-.note h3{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.note p{font-size:18px;font-weight:800;line-height:1.2;margin-top:3px}
 </style></head>
 <body>
 <div class="card">
-  <div class="wall"></div>
-  <div class="spot" style="width:560px;height:420px;left:330px;top:420px;background:rgba(255,255,255,.85)"></div>
-  <div class="floor"></div>
+  <img class="bg" src="bg.jpg" alt="">
+  <div class="veil top"></div><div class="veil bot"></div>
 
   <div class="head">
-    <div class="chip"><i></i>Парфюмерная вода · 50 мл</div>
-    <h1>Chance<br><span>Eau Tendre</span></h1>
-    <p class="sub">Нежный цветочно-фруктовый аромат</p>
+    <h1>Chance<br><span class="a">Eau Tendre</span></h1>
+    <div class="tag">парфюмерная вода</div>
   </div>
 
-  <div class="notes">
-    <div class="ttl">Пирамида аромата</div>
-    <div class="note"><div class="lvl">I</div><div><h3>Верхние ноты</h3><p>Грейпфрут, айва</p></div></div>
-    <div class="note"><div class="lvl">II</div><div><h3>Ноты сердца</h3><p>Жасмин, роза</p></div></div>
-    <div class="note"><div class="lvl">III</div><div><h3>Базовые ноты</h3><p>Белый мускус, кедр</p></div></div>
-  </div>
-
-  <div class="ambient" style="left:330px;top:870px;width:560px;height:90px"></div>
-  <div class="contact" style="left:350px;top:893px;width:520px;height:30px"></div>
+  <div class="ambient" style="left:230px;top:950px;width:680px;height:100px"></div>
+  <div class="contact" style="left:250px;top:972px;width:640px;height:36px"></div>
   <div class="refl"><img src="perfume.png" alt=""></div>
   <div class="product"><img src="perfume.png" alt="Chance Eau Tendre"></div>
 
-  <div class="badge" style="right:330px;top:420px;width:120px;height:120px"><div class="n" style="font-size:34px">50</div><div class="u">МЛ</div></div>
+  <div class="sticker" style="right:44px;top:330px;width:140px;height:140px"><b style="font-size:40px">50</b><span>мл</span></div>
 
-  <div class="strip">
-    <div class="it"><div class="k">до <em>8</em> часов</div><div class="v">стойкость аромата</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">Цветочный</div><div class="v">фруктовый шлейф</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">EDP</div><div class="v">парфюмерная вода</div></div>
+  <div class="pill" style="left:30px;top:420px"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg></div><div>Грейпфрут, айва<small>верхние ноты</small></div></div>
+  <div class="pill" style="left:30px;top:520px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21c-4-3-7-6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4-3 7-7 10z"/></svg></div><div>Жасмин, роза<small>ноты сердца</small></div></div>
+  <div class="pill" style="left:30px;top:620px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 10.5a6 6 0 0 1-12 0C6 10 9 7 12 3z"/></svg></div><div>Белый мускус<small>базовые ноты</small></div></div>
+
+  <div class="bar">
+    <div><b>до 8 ч</b><span>стойкость</span></div>
+    <div><b>Цветочный</b><span>фруктовый шлейф</span></div>
+    <div><b>EDP</b><span>парфюмерная вода</span></div>
   </div>
 </div>
 </body></html>

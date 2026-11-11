@@ -1,57 +1,40 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><title>Сыворотка the act — карточка</title>
-<link rel="stylesheet" href="../card-base.css">
+<html lang="ru"><head><meta charset="utf-8"><title>Сыворотка the act — карточка WB</title>
+<link rel="stylesheet" href="../wb-base.css">
 <style>
-.card{
-  --ink:#2E2118;--ink-soft:#7A6455;--accent:#A86B3C;
-  --wall:radial-gradient(640px 760px at 72% 46%,#FFFDF9 0%,#F5ECE1 50%,#E9D9C6 100%);
-  --horizon:930px;--floor:linear-gradient(#E3CFB8,#D6BEA3 60%,#CDB295);
-  --cast:drop-shadow(30px 26px 24px rgba(90,60,30,.24)) drop-shadow(0 6px 8px rgba(70,45,20,.16));
-  --contact:.5;
-  --chip-bg:#fff;--chip-ink:#7A6455;--chip-line:rgba(168,107,60,.22);
-  --tile:rgba(255,255,255,.76);--tile-line:rgba(255,255,255,.95);--tile-shadow:rgba(100,70,40,.13);
-  --ic-bg:linear-gradient(145deg,#F7E8D7,#EBD2B6);--ic-ink:#95592B;
-  --strip:#2E2118;--strip-ink:#fff;--strip-accent:#E9B98B;--strip-shadow:rgba(46,33,24,.3);
-  --badge:linear-gradient(145deg,#C4895A,#93582C);--badge-ink:#fff;--badge-shadow:rgba(147,88,44,.4);--badge-ring:rgba(168,107,60,.45);
-}
-.head{position:absolute;left:56px;top:56px;width:470px;z-index:6}
-h1{font-size:60px;margin-top:24px;line-height:1.02}
-.sub{margin-top:18px}
-.product{left:520px;top:205px;width:296px}
-.list{position:absolute;left:48px;top:470px;width:430px;display:flex;flex-direction:column;gap:14px;z-index:8}
+.card{--ink:#2E1D16;--ink-soft:#7A6052;--accent:#B5643A;--accent-shadow:rgba(181,100,58,.4);
+  --sticker:linear-gradient(145deg,#D08A5C,#94512A);
+  --bar:linear-gradient(135deg,#3A251B,#24150F);--bar-ink:#fff;
+  --cast:drop-shadow(-30px 30px 30px rgba(80,40,20,.35)) drop-shadow(0 10px 12px rgba(60,30,15,.22))}
+.bg{width:1000px;left:-60px;top:-120px;filter:saturate(1.02) brightness(1.04)}
+.veil.top{top:0;height:360px;background:linear-gradient(rgba(255,246,240,.93),rgba(255,246,240,.65) 55%,rgba(255,246,240,0))}
+.veil.left{top:0;bottom:0;left:0;right:auto;width:420px;background:linear-gradient(90deg,rgba(255,244,236,.35),rgba(255,244,236,0))}
+h1{font-size:68px}
+.product{left:570px;top:244px;width:300px}
 </style></head>
 <body>
 <div class="card">
-  <div class="wall"></div>
-  <div class="spot" style="width:420px;height:760px;left:470px;top:160px;background:rgba(255,255,255,.8)"></div>
-  <div class="floor"></div>
+  <img class="bg" src="bg.jpg" alt="">
+  <div class="veil top"></div><div class="veil left"></div>
 
   <div class="head">
-    <div class="chip"><i></i>the act · уход</div>
-    <h1>Сыворотка<br>для <span>ресниц</span><br>и бровей</h1>
-    <p class="sub">Рост, густота и сила с первого месяца</p>
+    <h1>Сыворотка<br><span class="a">для ресниц</span></h1>
+    <div class="tag">и бровей · the act</div>
   </div>
 
-  <div class="list">
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div><div><h3>Рост и густота</h3><p>Ресницы длиннее и плотнее</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><div><h3>Эффект за 4 недели</h3><p>Видимый результат курса</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20l9-9"/><path d="M13 11l3-7 4 4-7 3"/></svg></div><div><h3>Тонкая кисть</h3><p>Точное нанесение по линии роста</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.5"/></svg></div><div><h3>Для чувствительных глаз</h3><p>Мягкая формула без жжения</p></div></div>
-  </div>
-
-  <div class="ambient" style="left:470px;top:950px;width:400px;height:80px"></div>
-  <div class="contact" style="left:505px;top:972px;width:120px;height:22px"></div>
-  <div class="contact" style="left:700px;top:972px;width:120px;height:22px"></div>
   <div class="product"><img src="serum.png" alt="Сыворотка the act"></div>
 
-  <div class="badge" style="left:628px;top:372px;width:108px;height:108px"><div class="n" style="font-size:34px">3</div><div class="u">МЛ</div></div>
+  <div class="sticker" style="left:400px;top:330px;width:136px;height:136px"><b style="font-size:42px">3</b><span>мл</span></div>
 
-  <div class="strip">
-    <div class="it"><div class="k"><em>1</em> раз в день</div><div class="v">перед сном</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">Курс <em>2</em> мес.</div><div class="v">одного флакона</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">Ресницы<em>+</em>брови</div><div class="v">2 в 1</div></div>
+  <div class="pill" style="left:30px;top:500px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div><div>+40% длины<small>ресницы гуще и длиннее</small></div></div>
+  <div class="pill" style="left:30px;top:600px"><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><div>Эффект за 4 недели<small>видимый результат</small></div></div>
+  <div class="pill" style="left:30px;top:700px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20l9-9"/><path d="M13 11l3-7 4 4-7 3"/></svg></div><div>Тонкая кисть<small>точное нанесение</small></div></div>
+  <div class="pill" style="left:30px;top:800px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.5"/></svg></div><div>Без жжения<small>для чувствительных глаз</small></div></div>
+
+  <div class="bar">
+    <div><b>1 раз</b><span>в день, перед сном</span></div>
+    <div><b>2 месяца</b><span>курс одного флакона</span></div>
+    <div><b>2 в 1</b><span>ресницы и брови</span></div>
   </div>
 </div>
 </body></html>

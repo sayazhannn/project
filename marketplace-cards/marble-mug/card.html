@@ -1,49 +1,42 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><title>Мраморная кружка — карточка</title>
-<link rel="stylesheet" href="../card-base.css">
+<html lang="ru"><head><meta charset="utf-8"><title>Мраморная кружка — карточка WB</title>
+<link rel="stylesheet" href="../wb-base.css">
 <style>
-.card{
-  --ink:#3A1E26;--ink-soft:#7A5560;--accent:#C4577C;--gold:#B8915A;
-  --wall:radial-gradient(700px 520px at 50% 52%,#FFFAF8 0%,#F8E6E3 55%,#EFD3D0 100%);
-  --horizon:810px;--floor:linear-gradient(#EAC8C4,#DDB2AE 70%,#D6A8A4);
-  --cast:drop-shadow(26px 30px 26px rgba(120,50,60,.22)) drop-shadow(0 6px 8px rgba(90,30,40,.16));
-  --contact:.5;
-  --chip-bg:#fff;--chip-ink:#7A5560;--chip-line:rgba(196,87,124,.2);
-  --tile:rgba(255,255,255,.78);--tile-line:rgba(255,255,255,.95);--tile-shadow:rgba(120,40,60,.14);
-  --ic-bg:linear-gradient(145deg,#FFE6EE,#F7CBD9);--ic-ink:#B0446A;
-  --badge:linear-gradient(145deg,#D8739A,#B03F68);--badge-ink:#fff;--badge-shadow:rgba(176,63,104,.38);--badge-ring:rgba(196,87,124,.45);
-}
-.head{position:absolute;left:56px;top:56px;right:56px;z-index:6}
-h1{font-size:74px;margin-top:24px}
-.sub{margin-top:18px}
-.sub b{color:var(--gold)}
-.product{left:150px;top:378px;width:570px}
-.grid{position:absolute;left:48px;right:48px;top:892px;display:grid;grid-template-columns:1fr 1fr;gap:16px;z-index:8}
-.grid .f{padding:18px 18px}
+.card{--ink:#3A1E26;--ink-soft:#7A5560;--accent:#C94F7C;--accent-shadow:rgba(201,79,124,.4);
+  --sticker:linear-gradient(145deg,#E2BE76,#A8792F);
+  --bar:linear-gradient(135deg,#4A2230,#2E141D);--bar-ink:#fff;
+  --cast:drop-shadow(-30px 26px 24px rgba(70,40,20,.32)) drop-shadow(0 8px 10px rgba(60,30,20,.22));--contact:.55}
+.bg{width:1200px;left:-228px;top:-330px;transform:scaleX(-1);filter:saturate(1.05) brightness(1.03)}
+.veil.top{top:0;height:330px;background:linear-gradient(rgba(255,250,246,.9),rgba(255,250,246,.55) 60%,rgba(255,250,246,0))}
+.veil.bot{bottom:0;height:260px;background:linear-gradient(rgba(60,30,20,0),rgba(60,30,20,.35))}
+h1{font-size:70px}
+.product{left:282px;top:338px;width:590px}
 </style></head>
 <body>
 <div class="card">
-  <div class="wall"></div>
-  <div class="spot" style="width:520px;height:380px;left:190px;top:330px;background:rgba(255,255,255,.75)"></div>
-  <div class="floor"></div>
+  <img class="bg" src="bg.jpg" alt="">
+  <div class="veil top"></div><div class="veil bot"></div>
 
   <div class="head">
-    <div class="chip"><i></i>Посуда · идея для подарка</div>
-    <h1>Мраморная<br><span>кружка</span></h1>
-    <p class="sub">Керамика с <b>золотым кантом</b> · 400 мл</p>
+    <h1>Мраморная<br><span class="a">кружка</span></h1>
+    <div class="tag">с золотым кантом</div>
   </div>
 
-  <div class="ambient" style="left:140px;top:790px;width:560px;height:90px"></div>
-  <div class="contact" style="left:190px;top:822px;width:420px;height:34px"></div>
+  <div class="ambient" style="left:300px;top:790px;width:540px;height:100px"></div>
+  <div class="contact" style="left:330px;top:820px;width:410px;height:38px"></div>
   <div class="product"><img src="mug.png" alt="Мраморная кружка"></div>
 
-  <div class="badge" style="right:62px;top:350px;width:136px;height:136px"><div class="n" style="font-size:38px">400</div><div class="u">МЛ</div></div>
+  <div class="sticker" style="right:40px;top:200px;width:150px;height:150px"><b style="font-size:16px">ИДЕАЛЬНО</b><span>для подарка</span></div>
 
-  <div class="grid">
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div><div><h3>Прочная керамика</h3><p>Не впитывает запахи</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16" opacity=".0"/><path d="M8 12a4 4 0 0 1 4-4"/></svg></div><div><h3>Золотой кант</h3><p>Ручная роспись края</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 3c-1 2 1 3 0 5M12 3c-1 2 1 3 0 5M16 3c-1 2 1 3 0 5"/><path d="M4 11h14v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M18 12h1a2 2 0 0 1 0 4h-1"/></svg></div><div><h3>Держит тепло</h3><p>Толстые стенки</p></div></div>
-    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-2-4-6-4-6-1s6 1 6 1 6 2 6-1-4-3-6 1z"/></svg></div><div><h3>В подарочной коробке</h3><p>Готово к вручению</p></div></div>
+  <div class="pill" style="left:30px;top:430px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 8h12v6a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z"/><path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17"/></svg></div><div>400 мл<small>объём кружки</small></div></div>
+  <div class="pill" style="left:30px;top:530px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.9 1.2 5.8L12 16.1 7.1 19l1.2-5.8L4 9.3l5.6-.7z"/></svg></div><div>Золотой кант<small>ручная роспись</small></div></div>
+  <div class="pill" style="left:30px;top:630px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div><div>Керамика<small>не впитывает запахи</small></div></div>
+  <div class="pill" style="left:30px;top:730px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 3c-1 2 1 3 0 5M12 3c-1 2 1 3 0 5"/><path d="M4 11h14v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/></svg></div><div>Держит тепло<small>толстые стенки</small></div></div>
+
+  <div class="bar">
+    <div><b>400 мл</b><span>объём</span></div>
+    <div><b>Мрамор</b><span>уникальный узор</span></div>
+    <div><b>В коробке</b><span>готово к подарку</span></div>
   </div>
 </div>
 </body></html>

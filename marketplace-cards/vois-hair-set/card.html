@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>VOIS — карточка товара</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#2B0D24;
+    --plum-soft:#5A3A50;
+    --magenta:#E0189A;
+    --magenta-deep:#B80C7C;
+    --blush:#FBEEF4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:900px;height:1200px;background:#fff}
+  .card{
+    position:relative;width:900px;height:1200px;overflow:hidden;
+    font-family:'Manrope',sans-serif;color:var(--plum);
+    background:
+      radial-gradient(900px 700px at 78% 58%, #F9C9E3 0%, rgba(249,201,227,0) 60%),
+      radial-gradient(600px 500px at 0% 0%, #FFFFFF 0%, rgba(255,255,255,0) 70%),
+      linear-gradient(160deg,#FFF6FA 0%,#FBE7F1 45%,#F6D6E7 100%);
+  }
+  /* decorative rings */
+  .ring{position:absolute;border-radius:50%;border:1.5px solid rgba(224,24,154,.14)}
+  .r1{width:760px;height:760px;right:-250px;top:300px}
+  .r2{width:560px;height:560px;right:-130px;top:350px;border-color:rgba(224,24,154,.10)}
+  .glow{position:absolute;width:560px;height:560px;right:0px;top:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(224,24,154,.30) 0%,rgba(224,24,154,0) 65%);filter:blur(10px)}
+
+  /* header */
+  .head{position:absolute;left:56px;top:56px;right:56px}
+  .brand{display:inline-flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:100px;
+    background:rgba(255,255,255,.75);border:1px solid rgba(224,24,154,.18);
+    font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--plum-soft)}
+  .brand b{font-family:'Unbounded';font-weight:800;color:var(--magenta);letter-spacing:.02em;font-size:16px}
+  .brand i{width:4px;height:4px;border-radius:50%;background:var(--magenta);opacity:.5}
+  h1{font-family:'Unbounded',sans-serif;font-weight:800;font-size:62px;line-height:1.02;letter-spacing:-.02em;margin-top:26px}
+  h1 span{color:var(--magenta)}
+  .sub{margin-top:18px;font-size:22px;font-weight:600;line-height:1.35;color:var(--plum-soft);max-width:520px}
+
+  /* product */
+  .product{position:absolute;right:50px;top:388px;width:432px;z-index:3}
+  .product img{width:100%;display:block;filter:drop-shadow(0 30px 34px rgba(110,10,70,.28)) drop-shadow(0 6px 10px rgba(110,10,70,.18))}
+  .podium{position:absolute;right:30px;top:952px;width:470px;height:62px;border-radius:50%;z-index:2;
+    background:radial-gradient(ellipse at 50% 40%,#fff 0%,#FBE3EF 55%,#EFC2DA 100%);
+    box-shadow:0 18px 40px rgba(140,20,90,.22), inset 0 -6px 14px rgba(184,12,124,.18)}
+  .podium::after{content:"";position:absolute;left:8%;right:8%;top:26px;height:34px;border-radius:50%;
+    background:linear-gradient(#F3CFE2,#E7AFCD);z-index:-1}
+
+  /* volume badge */
+  .badge{position:absolute;right:400px;top:372px;width:128px;height:128px;border-radius:50%;z-index:4;
+    background:linear-gradient(145deg,#F02CAB,var(--magenta-deep));color:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    box-shadow:0 16px 30px rgba(184,12,124,.38), inset 0 2px 0 rgba(255,255,255,.25)}
+  .badge .n{font-family:'Unbounded';font-weight:800;font-size:22px;line-height:1;letter-spacing:-.02em}
+  .badge .u{font-size:13px;font-weight:700;letter-spacing:.04em;margin-top:6px;opacity:.95}
+  .badge::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1.5px dashed rgba(224,24,154,.45)}
+
+  /* features */
+  .features{position:absolute;left:56px;top:560px;width:300px;display:flex;flex-direction:column;gap:16px;z-index:5}
+  .f{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:22px;
+    background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 10px 28px rgba(120,20,80,.10);backdrop-filter:blur(12px)}
+  .ic{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+    background:linear-gradient(145deg,#FFE3F2,#FBC8E4)}
+  .ic svg{width:24px;height:24px;stroke:var(--magenta-deep);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .f h3{font-size:17px;font-weight:800;line-height:1.2}
+  .f p{font-size:14px;font-weight:600;line-height:1.35;color:var(--plum-soft);margin-top:4px}
+
+  /* bottom strip */
+  .strip{position:absolute;left:56px;right:56px;bottom:52px;height:92px;border-radius:26px;z-index:6;
+    background:var(--plum);color:#fff;display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;
+    box-shadow:0 18px 40px rgba(43,13,36,.28)}
+  .strip .sep{height:44px;background:rgba(255,255,255,.18)}
+  .strip .it{text-align:center;padding:0 10px}
+  .strip .k{font-family:'Unbounded';font-weight:700;font-size:20px;letter-spacing:-.01em}
+  .strip .k em{font-style:normal;color:#FF6CC8}
+  .strip .v{font-size:13px;font-weight:600;opacity:.72;margin-top:5px;letter-spacing:.02em}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="ring r1"></div><div class="ring r2"></div><div class="glow"></div>
+
+  <div class="head">
+    <div class="brand"><b>VOIS</b><i></i>набор для волос</div>
+    <h1>Восстановление<br>и <span>сияние</span> волос</h1>
+    <p class="sub">Шампунь + кондиционер с&nbsp;гидролизованным протеином овса</p>
+  </div>
+
+  <div class="features">
+    <div class="f">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M12 9c0-3 2-5 5-5 0 3-2 5-5 5z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/><path d="M12 17c0-2.5 1.8-4 4.5-4 0 2.5-1.8 4-4.5 4z"/></svg></div>
+      <div><h3>Протеин овса</h3><p>Питает и укрепляет волосы по всей длине</p></div>
+    </div>
+    <div class="f">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.2L19.5 9l-4 3.7 1.1 5.3L12 15.4 7.4 18l1.1-5.3-4-3.7 5.3-.8z"/></svg></div>
+      <div><h3>Эффект ботокса</h3><p>Гладкость и плотность, как после салона</p></div>
+    </div>
+    <div class="f">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7.2 6 10.5a6 6 0 0 1-12 0C6 10.2 9 7 12 3z"/><path d="M9.5 14a2.5 2.5 0 0 0 2.5 2.5"/></svg></div>
+      <div><h3>Глубокое увлажнение</h3><p>Мягкость без утяжеления</p></div>
+    </div>
+    <div class="f">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7c3 0 3 3 6 3s3-3 6-3 3 3 4 3"/><path d="M4 12c3 0 3 3 6 3s3-3 6-3 3 3 4 3"/><path d="M4 17c3 0 3 3 6 3s3-3 6-3"/></svg></div>
+      <div><h3>Лёгкое расчёсывание</h3><p>Без спутывания и пушистости</p></div>
+    </div>
+  </div>
+
+  <div class="badge"><div class="u" style="margin:0 0 4px">НАБОР</div><div class="n">2×500</div><div class="u">МЛ</div></div>
+  <div class="product"><img src="bottles.png" alt="VOIS шампунь и кондиционер"></div>
+  <div class="podium"></div>
+
+  <div class="strip">
+    <div class="it"><div class="k"><em>1000</em> мл</div><div class="v">ухода в наборе</div></div>
+    <div class="sep"></div>
+    <div class="it"><div class="k">Все типы</div><div class="v">волос</div></div>
+    <div class="sep"></div>
+    <div class="it"><div class="k">Блеск <em>+</em> сила</div><div class="v">с первого применения</div></div>
+  </div>
+</div>
+</body>
+</html>

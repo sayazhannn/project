@@ -1,126 +1,48 @@
 <!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<title>VOIS — карточка товара</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<html lang="ru"><head><meta charset="utf-8"><title>VOIS набор для волос — карточка WB</title>
+<link rel="stylesheet" href="../wb-base.css">
 <style>
-  :root{
-    --plum:#2B0D24;
-    --plum-soft:#5A3A50;
-    --magenta:#E0189A;
-    --magenta-deep:#B80C7C;
-    --blush:#FBEEF4;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{width:900px;height:1200px;background:#fff}
-  .card{
-    position:relative;width:900px;height:1200px;overflow:hidden;
-    font-family:'Manrope',sans-serif;color:var(--plum);
-    background:
-      radial-gradient(900px 700px at 78% 58%, #F9C9E3 0%, rgba(249,201,227,0) 60%),
-      radial-gradient(600px 500px at 0% 0%, #FFFFFF 0%, rgba(255,255,255,0) 70%),
-      linear-gradient(160deg,#FFF6FA 0%,#FBE7F1 45%,#F6D6E7 100%);
-  }
-  /* decorative rings */
-  .ring{position:absolute;border-radius:50%;border:1.5px solid rgba(224,24,154,.14)}
-  .r1{width:760px;height:760px;right:-250px;top:300px}
-  .r2{width:560px;height:560px;right:-130px;top:350px;border-color:rgba(224,24,154,.10)}
-  .glow{position:absolute;width:560px;height:560px;right:0px;top:420px;border-radius:50%;
-    background:radial-gradient(circle,rgba(224,24,154,.30) 0%,rgba(224,24,154,0) 65%);filter:blur(10px)}
-
-  /* header */
-  .head{position:absolute;left:56px;top:56px;right:56px}
-  .brand{display:inline-flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:100px;
-    background:rgba(255,255,255,.75);border:1px solid rgba(224,24,154,.18);
-    font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--plum-soft)}
-  .brand b{font-family:'Unbounded';font-weight:800;color:var(--magenta);letter-spacing:.02em;font-size:16px}
-  .brand i{width:4px;height:4px;border-radius:50%;background:var(--magenta);opacity:.5}
-  h1{font-family:'Unbounded',sans-serif;font-weight:800;font-size:62px;line-height:1.02;letter-spacing:-.02em;margin-top:26px}
-  h1 span{color:var(--magenta)}
-  .sub{margin-top:18px;font-size:22px;font-weight:600;line-height:1.35;color:var(--plum-soft);max-width:520px}
-
-  /* product */
-  .product{position:absolute;right:50px;top:388px;width:432px;z-index:3}
-  .product img{width:100%;display:block;filter:drop-shadow(0 30px 34px rgba(110,10,70,.28)) drop-shadow(0 6px 10px rgba(110,10,70,.18))}
-  .podium{position:absolute;right:30px;top:952px;width:470px;height:62px;border-radius:50%;z-index:2;
-    background:radial-gradient(ellipse at 50% 40%,#fff 0%,#FBE3EF 55%,#EFC2DA 100%);
-    box-shadow:0 18px 40px rgba(140,20,90,.22), inset 0 -6px 14px rgba(184,12,124,.18)}
-  .podium::after{content:"";position:absolute;left:8%;right:8%;top:26px;height:34px;border-radius:50%;
-    background:linear-gradient(#F3CFE2,#E7AFCD);z-index:-1}
-
-  /* volume badge */
-  .badge{position:absolute;right:400px;top:372px;width:128px;height:128px;border-radius:50%;z-index:4;
-    background:linear-gradient(145deg,#F02CAB,var(--magenta-deep));color:#fff;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-    box-shadow:0 16px 30px rgba(184,12,124,.38), inset 0 2px 0 rgba(255,255,255,.25)}
-  .badge .n{font-family:'Unbounded';font-weight:800;font-size:22px;line-height:1;letter-spacing:-.02em}
-  .badge .u{font-size:13px;font-weight:700;letter-spacing:.04em;margin-top:6px;opacity:.95}
-  .badge::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1.5px dashed rgba(224,24,154,.45)}
-
-  /* features */
-  .features{position:absolute;left:56px;top:560px;width:300px;display:flex;flex-direction:column;gap:16px;z-index:5}
-  .f{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:22px;
-    background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);
-    box-shadow:0 10px 28px rgba(120,20,80,.10);backdrop-filter:blur(12px)}
-  .ic{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
-    background:linear-gradient(145deg,#FFE3F2,#FBC8E4)}
-  .ic svg{width:24px;height:24px;stroke:var(--magenta-deep);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  .f h3{font-size:17px;font-weight:800;line-height:1.2}
-  .f p{font-size:14px;font-weight:600;line-height:1.35;color:var(--plum-soft);margin-top:4px}
-
-  /* bottom strip */
-  .strip{position:absolute;left:56px;right:56px;bottom:52px;height:92px;border-radius:26px;z-index:6;
-    background:var(--plum);color:#fff;display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;
-    box-shadow:0 18px 40px rgba(43,13,36,.28)}
-  .strip .sep{height:44px;background:rgba(255,255,255,.18)}
-  .strip .it{text-align:center;padding:0 10px}
-  .strip .k{font-family:'Unbounded';font-weight:700;font-size:20px;letter-spacing:-.01em}
-  .strip .k em{font-style:normal;color:#FF6CC8}
-  .strip .v{font-size:13px;font-weight:600;opacity:.72;margin-top:5px;letter-spacing:.02em}
-</style>
-</head>
+.card{--ink:#2B0D24;--ink-soft:#7A4E6A;--accent:#E0189A;--accent-shadow:rgba(224,24,154,.4);
+  --sticker:linear-gradient(145deg,#F43FB2,#B30C78);
+  --bar:linear-gradient(135deg,#3C0F31,#21071B);--bar-ink:#fff;
+  --cast:drop-shadow(-30px 26px 26px rgba(90,20,60,.32)) drop-shadow(0 8px 10px rgba(70,10,45,.22));--contact:.55}
+.bg{width:1040px;left:-70px;top:-180px;filter:blur(4px) saturate(1.05) brightness(1.04)}
+.veil.top{top:0;height:340px;background:linear-gradient(rgba(255,244,248,.93),rgba(255,244,248,.6) 55%,rgba(255,244,248,0))}
+.counter{position:absolute;left:0;right:0;top:930px;bottom:0;z-index:2;
+  background:linear-gradient(#FBF6F6 0%,#EFE3E4 40%,#E3D2D4 100%);
+  box-shadow:0 -1px 0 rgba(255,255,255,.9),0 -14px 40px rgba(80,20,40,.18)}
+.counter::before{content:"";position:absolute;inset:0;opacity:.35;
+  background:linear-gradient(115deg,transparent 30%,rgba(190,170,175,.35) 34%,transparent 38%),linear-gradient(160deg,transparent 60%,rgba(190,170,175,.3) 63%,transparent 67%)}
+h1{font-size:62px}
+.product{left:328px;top:248px;width:548px}
+</style></head>
 <body>
 <div class="card">
-  <div class="ring r1"></div><div class="ring r2"></div><div class="glow"></div>
+  <img class="bg" src="bg.jpg" alt="">
+  <div class="veil top"></div>
+  <div class="counter"></div>
 
   <div class="head">
-    <div class="brand"><b>VOIS</b><i></i>набор для волос</div>
-    <h1>Восстановление<br>и <span>сияние</span> волос</h1>
-    <p class="sub">Шампунь + кондиционер с&nbsp;гидролизованным протеином овса</p>
+    <h1>Восстановление<br><span class="a">и блеск волос</span></h1>
+    <div class="tag">шампунь + кондиционер</div>
   </div>
 
-  <div class="features">
-    <div class="f">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M12 9c0-3 2-5 5-5 0 3-2 5-5 5z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/><path d="M12 17c0-2.5 1.8-4 4.5-4 0 2.5-1.8 4-4.5 4z"/></svg></div>
-      <div><h3>Протеин овса</h3><p>Питает и укрепляет волосы по всей длине</p></div>
-    </div>
-    <div class="f">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.2L19.5 9l-4 3.7 1.1 5.3L12 15.4 7.4 18l1.1-5.3-4-3.7 5.3-.8z"/></svg></div>
-      <div><h3>Эффект ботокса</h3><p>Гладкость и плотность, как после салона</p></div>
-    </div>
-    <div class="f">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7.2 6 10.5a6 6 0 0 1-12 0C6 10.2 9 7 12 3z"/><path d="M9.5 14a2.5 2.5 0 0 0 2.5 2.5"/></svg></div>
-      <div><h3>Глубокое увлажнение</h3><p>Мягкость без утяжеления</p></div>
-    </div>
-    <div class="f">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7c3 0 3 3 6 3s3-3 6-3 3 3 4 3"/><path d="M4 12c3 0 3 3 6 3s3-3 6-3 3 3 4 3"/><path d="M4 17c3 0 3 3 6 3s3-3 6-3"/></svg></div>
-      <div><h3>Лёгкое расчёсывание</h3><p>Без спутывания и пушистости</p></div>
-    </div>
-  </div>
-
-  <div class="badge"><div class="u" style="margin:0 0 4px">НАБОР</div><div class="n">2×500</div><div class="u">МЛ</div></div>
+  <div class="ambient" style="left:320px;top:930px;width:580px;height:100px"></div>
+  <div class="contact" style="left:350px;top:968px;width:250px;height:34px"></div>
+  <div class="contact" style="left:610px;top:968px;width:250px;height:34px"></div>
   <div class="product"><img src="bottles.png" alt="VOIS шампунь и кондиционер"></div>
-  <div class="podium"></div>
 
-  <div class="strip">
-    <div class="it"><div class="k"><em>1000</em> мл</div><div class="v">ухода в наборе</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">Все типы</div><div class="v">волос</div></div>
-    <div class="sep"></div>
-    <div class="it"><div class="k">Блеск <em>+</em> сила</div><div class="v">с первого применения</div></div>
+  <div class="sticker" style="left:200px;top:262px;width:140px;height:140px"><b style="font-size:26px">2×500</b><span>мл</span></div>
+
+  <div class="pill" style="left:28px;top:450px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M12 9c0-3 2-5 5-5 0 3-2 5-5 5z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/></svg></div><div>Протеин овса<small>питает и укрепляет</small></div></div>
+  <div class="pill" style="left:28px;top:550px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.9 1.2 5.8L12 16.1 7.1 19l1.2-5.8L4 9.3l5.6-.7z"/></svg></div><div>Эффект ботокса<small>гладкость как из салона</small></div></div>
+  <div class="pill" style="left:28px;top:650px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 10.5a6 6 0 0 1-12 0C6 10 9 7 12 3z"/></svg></div><div>Увлажнение<small>без утяжеления</small></div></div>
+  <div class="pill" style="left:28px;top:750px"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7c3 0 3 3 6 3s3-3 6-3 3 3 4 3"/><path d="M4 12c3 0 3 3 6 3s3-3 6-3 3 3 4 3"/><path d="M4 17c3 0 3 3 6 3s3-3 6-3"/></svg></div><div>Легко расчёсывать<small>без спутывания</small></div></div>
+
+  <div class="bar">
+    <div><b>1000 мл</b><span>ухода в наборе</span></div>
+    <div><b>Все типы</b><span>волос</span></div>
+    <div><b>Блеск</b><span>с первого мытья</span></div>
   </div>
 </div>
-</body>
-</html>
+</body></html>

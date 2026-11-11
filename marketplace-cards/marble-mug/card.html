@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Мраморная кружка — карточка</title>
+<link rel="stylesheet" href="../card-base.css">
+<style>
+.card{
+  --ink:#3A1E26;--ink-soft:#7A5560;--accent:#C4577C;--gold:#B8915A;
+  --wall:radial-gradient(700px 520px at 50% 52%,#FFFAF8 0%,#F8E6E3 55%,#EFD3D0 100%);
+  --horizon:810px;--floor:linear-gradient(#EAC8C4,#DDB2AE 70%,#D6A8A4);
+  --cast:drop-shadow(26px 30px 26px rgba(120,50,60,.22)) drop-shadow(0 6px 8px rgba(90,30,40,.16));
+  --contact:.5;
+  --chip-bg:#fff;--chip-ink:#7A5560;--chip-line:rgba(196,87,124,.2);
+  --tile:rgba(255,255,255,.78);--tile-line:rgba(255,255,255,.95);--tile-shadow:rgba(120,40,60,.14);
+  --ic-bg:linear-gradient(145deg,#FFE6EE,#F7CBD9);--ic-ink:#B0446A;
+  --badge:linear-gradient(145deg,#D8739A,#B03F68);--badge-ink:#fff;--badge-shadow:rgba(176,63,104,.38);--badge-ring:rgba(196,87,124,.45);
+}
+.head{position:absolute;left:56px;top:56px;right:56px;z-index:6}
+h1{font-size:74px;margin-top:24px}
+.sub{margin-top:18px}
+.sub b{color:var(--gold)}
+.product{left:150px;top:378px;width:570px}
+.grid{position:absolute;left:48px;right:48px;top:892px;display:grid;grid-template-columns:1fr 1fr;gap:16px;z-index:8}
+.grid .f{padding:18px 18px}
+</style></head>
+<body>
+<div class="card">
+  <div class="wall"></div>
+  <div class="spot" style="width:520px;height:380px;left:190px;top:330px;background:rgba(255,255,255,.75)"></div>
+  <div class="floor"></div>
+
+  <div class="head">
+    <div class="chip"><i></i>Посуда · идея для подарка</div>
+    <h1>Мраморная<br><span>кружка</span></h1>
+    <p class="sub">Керамика с <b>золотым кантом</b> · 400 мл</p>
+  </div>
+
+  <div class="ambient" style="left:140px;top:790px;width:560px;height:90px"></div>
+  <div class="contact" style="left:190px;top:822px;width:420px;height:34px"></div>
+  <div class="product"><img src="mug.png" alt="Мраморная кружка"></div>
+
+  <div class="badge" style="right:62px;top:350px;width:136px;height:136px"><div class="n" style="font-size:38px">400</div><div class="u">МЛ</div></div>
+
+  <div class="grid">
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div><div><h3>Прочная керамика</h3><p>Не впитывает запахи</p></div></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16" opacity=".0"/><path d="M8 12a4 4 0 0 1 4-4"/></svg></div><div><h3>Золотой кант</h3><p>Ручная роспись края</p></div></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 3c-1 2 1 3 0 5M12 3c-1 2 1 3 0 5M16 3c-1 2 1 3 0 5"/><path d="M4 11h14v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M18 12h1a2 2 0 0 1 0 4h-1"/></svg></div><div><h3>Держит тепло</h3><p>Толстые стенки</p></div></div>
+    <div class="f"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18"/><path d="M12 8c-2-4-6-4-6-1s6 1 6 1 6 2 6-1-4-3-6 1z"/></svg></div><div><h3>В подарочной коробке</h3><p>Готово к вручению</p></div></div>
+  </div>
+</div>
+</body></html>

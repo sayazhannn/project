@@ -3,7 +3,7 @@ import numpy as np, cv2
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
 from manifest import frames, UP
 
-W, H, FPS, T = 1920, 1080, 25, 1.0
+W, H, FPS, T = 1080, 1920, 25, 1.0
 FB = "/usr/share/fonts/opentype/inter/Inter-Bold.otf"
 FS = "/usr/share/fonts/opentype/inter/Inter-SemiBold.otf"
 GREEN_D = (22, 74, 42)
@@ -68,12 +68,12 @@ def premult(rgba_img):
 
 def make_bg(im):
     a = np.asarray(im, np.uint8); h, w = a.shape[:2]
-    tw = int(h * 16 / 9)
+    tw = int(h * W / H)
     if tw <= w:
         x0 = (w - tw) // 2; a = a[:, x0:x0 + tw]
     else:
-        th = int(w * 9 / 16); y0 = (h - th) // 2; a = a[y0:y0 + th]
-    s = cv2.resize(a, (192, 108), interpolation=cv2.INTER_AREA)
+        th = int(w * H / W); y0 = (h - th) // 2; a = a[y0:y0 + th]
+    s = cv2.resize(a, (108, 192), interpolation=cv2.INTER_AREA)
     s = cv2.GaussianBlur(s, (0, 0), 5)
     b = cv2.resize(s, (W, H), interpolation=cv2.INTER_CUBIC).astype(np.float32)
     out = 0.22 * b + 0.78 * WASH
@@ -91,7 +91,7 @@ def layout(ars, rw, rh, gap, caps):
         hs = [(rw - gap * (len(r) - 1)) / sum(ars[i] for i in r) for r in rows]
         tot = sum(hs) + gap * (len(rows) - 1)
         f = 1.0 if tot <= rh else (rh - gap * (len(rows) - 1)) / sum(hs)
-        area = sum((f * h) ** 2 * sum(ars[i] for i in r) for r, h in zip(rows, hs))
+        area = sum(math.log(ars[i] * (f * h) ** 2 + 1) for r, h in zip(rows, hs) for i in r)
         if best is None or area > best[0]: best = (area, rows, hs, f)
     _, rows, hs, f = best
     heights = [f * h for h in hs]
@@ -109,7 +109,7 @@ def layout(ars, rw, rh, gap, caps):
         y += h + gap
     return boxes
 
-AX, AY, AW, AH = 60, 210, 1800, 840
+AX, AY, AW, AH = 36, 270, 1008, 1610
 
 def comp(layer, im, x, y):
     x0, y0 = max(x, 0), max(y, 0); x1, y1 = min(x + im.width, layer.width), min(y + im.height, layer.height)
@@ -121,8 +121,8 @@ def make_layer(ims):
     ars = [i.width / i.height for i in ims]
     cm = 2.1 if len(ims) == 1 else 1.6
     caps = [(i.width * cm, i.height * cm) for i in ims]
-    inset = 26
-    boxes = layout(ars, AW - 2 * inset, AH - 2 * inset, 24, caps)
+    inset = 22
+    boxes = layout(ars, AW - 2 * inset, AH - 2 * inset, 26, caps)
     b = 7
     for im, (x, y, w, h) in zip(ims, boxes):
         x = int(round(x + inset)); y = int(round(y + inset)); w = int(round(w)); h = int(round(h))
@@ -163,7 +163,7 @@ def fit_text(lines, maxw, maxh, smax=46, smin=26, lh=1.28):
         if len(out) * sz * lh <= maxh: return f, sz, out
     f, out = go(smin); return f, smin, out
 
-HX, HY, HW, HH = 60, 24, 1580, 160
+HX, HY, HW, HH = 36, 36, 844, 210
 SHM = 34
 
 def panel_img(w, h, bar=True):
@@ -180,12 +180,14 @@ def panel_img(w, h, bar=True):
     return im
 
 def build_header(lines):
-    f, s, out = fit_text(lines, HW - 110, HH - 34)
+    f, s, out = fit_text(lines, HW - 100, HH - 34, smax=44)
     d0 = ImageDraw.Draw(Image.new("L", (4, 4)))
     tw = max(d0.textlength(t, font=f) for t, _ in out)
-    pw = int(min(HW, max(560, tw + 52 + 64)))
-    im = panel_img(pw, HH)
-    lh = s * 1.28; y0 = SHM + (HH - lh * len(out)) / 2 - 2
+    pw = int(min(HW, max(420, tw + 52 + 56)))
+    lh = s * 1.28
+    ph = int(max(120, lh * len(out) + 56))
+    im = panel_img(pw, ph)
+    y0 = SHM + (ph - lh * len(out)) / 2 - 2
     d = ImageDraw.Draw(im)
     for n, (t, li) in enumerate(out):
         col = GREEN if (len(lines) == 2 and li == 1 and lines[1].startswith("Хабдул")) else GREEN_D
@@ -193,25 +195,25 @@ def build_header(lines):
     return premult(im)
 
 def build_title_panel(lines):
-    pw = 1500
-    f1 = ImageFont.truetype(FB, 60); f2 = ImageFont.truetype(FB, 44)
-    l1 = wrap(lines[0], f1, pw - 160); l2 = wrap(lines[1], f2, pw - 160)
-    h1 = len(l1) * 60 * 1.3; h2 = len(l2) * 44 * 1.3
+    pw = 960
+    f1 = ImageFont.truetype(FB, 56); f2 = ImageFont.truetype(FB, 42)
+    l1 = wrap(lines[0], f1, pw - 110); l2 = wrap(lines[1], f2, pw - 110)
+    h1 = len(l1) * 56 * 1.3; h2 = len(l2) * 42 * 1.3
     ph = int(70 + h1 + 44 + h2 + 70)
     im = panel_img(pw, ph, bar=False)
     d = ImageDraw.Draw(im); y = SHM + 70
     for t in l1:
-        d.text((SHM + pw / 2, y), t, font=f1, fill=GREEN_D, anchor="ma"); y += 60 * 1.3
+        d.text((SHM + pw / 2, y), t, font=f1, fill=GREEN_D, anchor="ma"); y += 56 * 1.3
     y += 14
     d.rounded_rectangle((SHM + pw / 2 - 90, y, SHM + pw / 2 + 90, y + 6), 3, fill=GREEN)
     y += 30
     for t in l2:
-        d.text((SHM + pw / 2, y), t, font=f2, fill=GREEN, anchor="ma"); y += 44 * 1.3
+        d.text((SHM + pw / 2, y), t, font=f2, fill=GREEN, anchor="ma"); y += 42 * 1.3
     return premult(im), pw, ph
 
 def build_logo():
     l = Image.open(os.path.join(HERE, "logo.png")).convert("RGBA")
-    lh = 150; lw = int(l.width * lh / l.height)
+    lh = 124; lw = int(l.width * lh / l.height)
     l = l.resize((lw, lh), Image.LANCZOS)
     return premult(l), lw, lh
 
@@ -240,32 +242,23 @@ def build_scene(k, F):
     if k == 1:
         sc.kind = "title"
         pick = [F[j][0] for j in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 19)]
-        cw, ch = 400, 375
-        canvas = np.zeros((ch * 3, cw * 5, 3), np.uint8)
+        cw, ch = 360, 384
+        canvas = np.zeros((ch * 5, cw * 3, 3), np.uint8)
         for n, p in enumerate(pick):
             im = np.asarray(load(p, 1200)); h, w = im.shape[:2]
             sc_ = max(cw / w, ch / h)
             r = cv2.resize(im, (int(w * sc_) + 1, int(h * sc_) + 1), interpolation=cv2.INTER_AREA)
             y0 = (r.shape[0] - ch) // 2; x0 = (r.shape[1] - cw) // 2
-            canvas[(n // 5) * ch:(n // 5 + 1) * ch, (n % 5) * cw:(n % 5 + 1) * cw] = r[y0:y0 + ch, x0:x0 + cw]
-        canvas = cv2.resize(canvas, (W + 80, H + 45), interpolation=cv2.INTER_AREA)
+            canvas[(n // 3) * ch:(n // 3 + 1) * ch, (n % 3) * cw:(n % 3 + 1) * cw] = r[y0:y0 + ch, x0:x0 + cw]
+        canvas = cv2.resize(canvas, (W + 60, H + 107), interpolation=cv2.INTER_AREA)
         sc.collage = (0.34 * canvas.astype(np.float32) + 0.66 * WASH).astype(np.uint8)
         sc.panel, sc.pw, sc.ph = build_title_panel(TEXT[1])
-        # school logo intro: logo centre placed at screen centre, background extended sideways
-        sl = np.asarray(load(SCHOOL_LOGO, 2000)); sh_, sw_ = sl.shape[:2]
-        Hs = int(H * 1.38); Ws = int(sw_ * Hs / sh_)
-        slr = cv2.resize(sl, (Ws, Hs), interpolation=cv2.INTER_AREA)
-        top = int(Hs * 0.447 - H / 2 - 10)
-        top = max(0, min(top, Hs - H))
-        sl_h = slr[top:top + H]
-        colh = sl_h[:, :8].mean(axis=1, keepdims=True)
-        bgf = np.repeat(colh, W, axis=1).astype(np.float32)
-        x0 = (W - sl_h.shape[1]) // 2
-        fe = 60
-        mask = np.ones(sl_h.shape[:2], np.float32)
-        ramp = np.linspace(0, 1, fe, dtype=np.float32)
-        mask[:, :fe] *= ramp[None, :]; mask[:, -fe:] *= ramp[::-1][None, :]
-        bgf[:, x0:x0 + sl_h.shape[1]] = bgf[:, x0:x0 + sl_h.shape[1]] * (1 - mask[..., None]) + sl_h.astype(np.float32) * mask[..., None]
+        # school logo intro: cover-fit the portrait logo picture to the 9:16 frame
+        sl = np.asarray(load(SCHOOL_LOGO, 2400)); sh_, sw_ = sl.shape[:2]
+        k_ = max(W / sw_, H / sh_) * 1.0
+        slr = cv2.resize(sl, (int(sw_ * k_) + 1, int(sh_ * k_) + 1), interpolation=cv2.INTER_AREA)
+        x0 = (slr.shape[1] - W) // 2; y0 = (slr.shape[0] - H) // 2
+        bgf = slr[y0:y0 + H, x0:x0 + W].astype(np.float32)
         sc.intro = bgf.astype(np.uint8)
         sc.header = None
         return sc
@@ -297,14 +290,14 @@ def render_body(sc, t):
         # intro (school logo) 0..4.6s, crossfade to title 4.0..5.0
         z = 1.0 + 0.06 * clamp(t / 15)
         M = np.float32([[z, 0, (1 - z) * (W + 80) / 2 - 40 * 0], [0, z, (1 - z) * (H + 45) / 2]])
-        col = cv2.warpAffine(sc.collage, np.float32([[z, 0, (1 - z) * W / 2 - 40 * z + 0], [0, z, (1 - z) * H / 2 - 22 * z]]), (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE).astype(np.float32)
+        col = cv2.warpAffine(sc.collage, np.float32([[z, 0, (1 - z) * W / 2 - 30 * z], [0, z, (1 - z) * H / 2 - 53 * z]]), (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE).astype(np.float32)
         wi = 1 - sm((t - 4.0) / 1.0)
         zi = 1.0 + 0.05 * clamp(t / 5.0)
         intro = cv2.warpAffine(sc.intro, np.float32([[zi, 0, (1 - zi) * W / 2], [0, zi, (1 - zi) * H / 2]]), (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE).astype(np.float32)
         out = col * (1 - wi) + intro * wi
         pa = sm((t - 5.3) / 0.7) * (1 - sm((t - (sc.D - T - 1.6)) / 0.5))
         if pa > 0:
-            blend_premult(out, sc.panel, (W - sc.panel.shape[1]) // 2, int((H - sc.panel.shape[0]) / 2 + 40 - (1 - pa) * 18), pa)
+            blend_premult(out, sc.panel, (W - sc.panel.shape[1]) // 2, int((H - sc.panel.shape[0]) / 2 + 60 - (1 - pa) * 18), pa)
         return out
     cur = None
     pgs = [p for p in sc.pages if p["ts"] <= t + 1e-9] or [sc.pages[0]]
@@ -359,7 +352,7 @@ class Timeline:
                 blend_premult(out, sc.header, HX - SHM, HY - SHM + int((1 - ain) * -12), a)
         # logo (+ white badge in the school-logo intro)
         la = sm(t / 1.0)
-        lx = W - 60 - self.lw; ly = HY + (HH - self.lh) // 2
+        lx = W - HX - self.lw; ly = HY
         if t < 5.2:
             ba = 1 - sm((t - 4.0) / 1.0)
             if ba > 0:
@@ -395,17 +388,17 @@ if __name__ == "__main__":
         for k in tl.ks: print(k, tl.D[k], round(tl.S[k], 1), len(tl.F.get(k, [])))
         print("total", tl.total, tl.nframes)
     elif mode == "preview":
-        tl = Timeline(); os.makedirs("prev", exist_ok=True)
+        tl = Timeline(); os.makedirs("prev_v", exist_ok=True)
         for s in sys.argv[2:]:
-            t = float(s); Image.fromarray(tl.frame(int(t * FPS))).save(f"prev/t{int(t * 10):04d}.jpg", quality=88)
+            t = float(s); Image.fromarray(tl.frame(int(t * FPS))).save(f"prev_v/t{int(t * 10):04d}.jpg", quality=88)
     elif mode == "full":
         from multiprocessing import Pool
-        tl = Timeline(); os.makedirs("chunks", exist_ok=True)
+        tl = Timeline(); os.makedirs("chunks_v", exist_ok=True)
         step = 150; jobs = []
         for i, f0 in enumerate(range(0, tl.nframes, step)):
-            jobs.append((i, f0, min(tl.nframes, f0 + step), f"chunks/c{i:03d}.mp4"))
+            jobs.append((i, f0, min(tl.nframes, f0 + step), f"chunks_v/c{i:03d}.mp4"))
         with Pool(4) as pool:
             for r in pool.imap_unordered(worker, jobs): print("done", r, flush=True)
-        with open("chunks/list.txt", "w") as fh:
+        with open("chunks_v/list.txt", "w") as fh:
             for j in jobs: fh.write(f"file '{os.path.abspath(j[3])}'\n")
-        subprocess.check_call(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", "chunks/list.txt", "-c", "copy", "video_silent.mp4"])
+        subprocess.check_call(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", "chunks_v/list.txt", "-c", "copy", "video_v_silent.mp4"])

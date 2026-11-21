@@ -260,7 +260,7 @@ footer.site .logo{color:var(--fg)}
 .wa-float .wa-ico{width:28px;height:28px}
 .wa-float::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(37,211,102,.55);animation:waping 2.4s infinite}
 @keyframes waping{70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
-@media (max-width:600px){.wa-float span{display:none}.wa-float{padding:14px}}
+@media (max-width:600px){.wa-float span{display:none}.wa-float{padding:14px}.svc{padding-right:58px}}
 .tag-note{position:fixed;left:calc(14px + env(safe-area-inset-left,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:59;padding:7px 12px;border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font:500 12px/1.3 system-ui,sans-serif}
 
 /* анимации появления: текст виден сразу, блоки только слегка сдвинуты */
@@ -318,7 +318,7 @@ footer.site .logo{color:var(--fg)}
     </div>
     <div class="visual reveal" style="--d:.25s" data-speed="-0.05" aria-hidden="true">
       <div class="visual__panel">
-        <svg class="visual__ring" viewBox="0 0 200 200"><defs><path id="ring" d="M100 100 m-82 0 a82 82 0 1 1 164 0 a82 82 0 1 1 -164 0"/></defs><circle cx="100" cy="100" r="94"/><text><textPath href="#ring">Ремстрой · Ремонт квартир · Астана · </textPath></text></svg>
+        <svg class="visual__ring" viewBox="0 0 200 200"><defs><path id="ring" d="M100 100 m-82 0 a82 82 0 1 1 164 0 a82 82 0 1 1 -164 0"/></defs><circle cx="100" cy="100" r="94"/><text><textPath href="#ring" textLength="512" lengthAdjust="spacing">Ремстрой · Ремонт квартир · Астана · </textPath></text></svg>
         <div class="visual__icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3zM9 21v-6h6v6"/></svg></div>
       </div>
       <div class="chip chip--1"><span class="dot"></span><div><small>Выезд мастера</small><b>Замер завтра</b></div></div>

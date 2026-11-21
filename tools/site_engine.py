@@ -112,7 +112,7 @@ DEFAULT_STEPS = {
     'booking': [('Выберите услугу', 'Посмотрите цены ниже или спросите администратора.'),
                 ('Напишите в WhatsApp', 'Форма соберёт сообщение сама — останется нажать «Отправить».'),
                 ('Подтверждение', 'Администратор ответит в течение 15 минут и закрепит время.'),
-                ('Приходите', 'Напомним о визите за день, а после — подскажем по уходу.')],
+                ('Приходите', 'Напомним о визите за день — останется только прийти.')],
     'order':   [('Выберите', 'Позиции и цены — в меню ниже.'),
                 ('Напишите в WhatsApp', 'Форма соберёт заказ в одно сообщение.'),
                 ('Подтверждение', 'Уточним детали, время и способ оплаты.'),
@@ -403,7 +403,7 @@ footer.site .logo{color:var(--fg)}
 .wa-float .wa-ico{width:28px;height:28px}
 .wa-float::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(37,211,102,.55);animation:waping 2.4s infinite}
 @keyframes waping{70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
-@media (max-width:600px){.wa-float span{display:none}.wa-float{padding:14px}}
+@media (max-width:600px){.wa-float span{display:none}.wa-float{padding:14px}.svc{padding-right:58px}}
 .tag-note{position:fixed;left:calc(14px + env(safe-area-inset-left,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:59;padding:7px 12px;border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font:500 12px/1.3 system-ui,sans-serif}
 
 /* анимации появления: текст виден сразу, блоки только слегка сдвинуты */
@@ -648,7 +648,7 @@ def render(site, artifact=False):
     </div>
     <div class="visual reveal" style="--d:.25s" data-speed="-0.05" aria-hidden="true">
       <div class="visual__panel">
-        <svg class="visual__ring" viewBox="0 0 200 200"><defs><path id="ring" d="M100 100 m-82 0 a82 82 0 1 1 164 0 a82 82 0 1 1 -164 0"/></defs><circle cx="100" cy="100" r="94"/><text><textPath href="#ring">{e(site.get('ring', name + ' · ' + site['niche'] + ' · Астана · '))}</textPath></text></svg>
+        <svg class="visual__ring" viewBox="0 0 200 200"><defs><path id="ring" d="M100 100 m-82 0 a82 82 0 1 1 164 0 a82 82 0 1 1 -164 0"/></defs><circle cx="100" cy="100" r="94"/><text><textPath href="#ring" textLength="512" lengthAdjust="spacing">{e(site.get('ring', name + ' · ' + site['niche'] + ' · Астана · '))}</textPath></text></svg>
         <div class="visual__icon">{icon(site['icon'])}</div>
       </div>
       <div class="chip chip--1"><span class="dot"></span><div><small>{e(site.get('live_label', m['live']))}</small><b>{e(site['live'])}</b></div></div>
@@ -702,7 +702,7 @@ def render(site, artifact=False):
 <section class="sec" id="services" style="padding-top:40px">
   <div class="wrap" data-tabs>
     <div class="sec-head">
-      <div><p class="eyebrow reveal">Услуги и цены</p><h2 class="reveal">{site.get('svc_title', 'Что мы <em>делаем</em>')}</h2></div>
+      <div><p class="eyebrow reveal">{e(site.get('svc_eyebrow', 'Услуги и цены'))}</p><h2 class="reveal">{site.get('svc_title', 'Что мы <em>делаем</em>')}</h2></div>
       <p class="reveal">{e(site.get('svc_note', 'Нажмите «' + m['cta'] + '» напротив услуги — откроется WhatsApp с готовым сообщением.'))}</p>
     </div>
     <div class="tabs reveal" role="tablist">{tabs}</div>
@@ -786,7 +786,8 @@ def render(site, artifact=False):
     opts = ''.join(f'<option>{e(s)}</option>' for s in all_services)
     times = site.get('times') or ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
     if site['mode'] == 'order':
-        times = ['Как можно скорее'] + times
+        if site.get('asap', True):
+            times = ['Как можно скорее'] + times
     topts = ''.join(f'<option>{e(x)}</option>' for x in times)
     hours = ''.join(f'<tr><td>{e(d)}</td><td>{e(h)}</td></tr>' for d, h in site['hours'])
     book = f'''

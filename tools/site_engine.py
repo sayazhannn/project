@@ -258,7 +258,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hl__ico{width:48px;height:48px;border-radius:calc(var(--r)*.5 + 6px);display:grid;place-items:center;background:var(--soft-accent);color:var(--accent);flex:none}
 .hl h3{font-family:var(--body);font-weight:700;font-size:18px;text-transform:none;letter-spacing:0;margin-bottom:4px}
 .hl p{color:var(--muted);font-size:15px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:70px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:70px}
 @media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:480px){.stat{padding:20px 16px}.stat strong{font-size:calc(clamp(26px,8.5vw,40px)*var(--scale))}}
 .stat{padding:28px 24px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
@@ -280,7 +280,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .svc__go{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:var(--soft-accent);color:var(--accent-ink);font-size:14px;font-weight:600;white-space:nowrap;transition:background .3s,color .3s}
 .svc__go:hover{background:#25D366;color:#fff}
 .svc__go .wa-ico{width:16px;height:16px}
-@media (max-width:640px){.svc{grid-template-columns:1fr auto}.svc__go{grid-column:1/-1;justify-self:start}}
+@media (max-width:640px){.svc{grid-template-columns:minmax(0,1fr) auto}.svc>div:first-child{min-width:0;overflow-wrap:anywhere}.svc__go{grid-column:1/-1;justify-self:start}}
+@media (max-width:380px){.svc{grid-template-columns:1fr}.svc__price{font-size:calc(20px*var(--scale))}}
 .note{margin-top:22px;color:var(--muted);font-size:14px}
 
 /* акция */
@@ -491,7 +492,7 @@ JS = r"""
   const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } }), { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-  const fmt = (n, d) => n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const fmt = (n, d) => n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ' ').replace('.', ',');
   const cio = new IntersectionObserver((es) => es.forEach((en) => {
     if (!en.isIntersecting) return;
     const el = en.target, to = parseFloat(el.dataset.count), d = parseInt(el.dataset.decimals || '0', 10), dur = reduce ? 0 : 1800, t0 = performance.now();
@@ -514,7 +515,7 @@ JS = r"""
   if (form) {
     const send = document.getElementById('f-send'), preview = document.getElementById('f-preview');
     const dateEl = document.getElementById('f-date');
-    const today = new Date(); const iso = (d) => d.toISOString().slice(0, 10);
+    const today = new Date(); const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     dateEl.min = iso(today);
     const human = (v) => { if (!v) return ''; const [y, m, d] = v.split('-'); return `${d}.${m}.${y}`; };
     const build = () => {
@@ -642,7 +643,7 @@ def render(site, artifact=False):
       </div>
       <div class="trust reveal" style="--d:.65s">
         <div class="avatars" aria-hidden="true"><i>{initials[0]}</i><i>{initials[1]}</i><i>{initials[2]}</i></div>
-        <div><b>{site['rating']}</b> <span class="stars">★★★★★</span><br>{site['reviews_n']} отзывов в 2ГИС</div>
+        <div><b>{str(site['rating']).replace('.', ',')}</b> <span class="stars">★★★★★</span><br>{site['reviews_n']} отзывов в 2ГИС</div>
       </div>
     </div>
     <div class="visual reveal" style="--d:.25s" data-speed="-0.05" aria-hidden="true">
@@ -692,7 +693,7 @@ def render(site, artifact=False):
         for it in items:
             nm, desc, price = (it.split('|') + ['', ''])[:3]
             all_services.append(nm)
-            link = wa_link(phone, f"{m['hello']} в «{name}». {m['per']}{nm}")
+            link = wa_link(phone, f"{m['hello']} в «{name}»: {nm}")
             rows += (f'<div class="svc"><div><h3>{e(nm)}</h3>{f"<p>{e(desc)}</p>" if desc else ""}</div>'
                      f'<div class="svc__price">{e(price)}</div>'
                      f'<a class="svc__go" href="{e(link)}" target="_blank" rel="noopener" data-pick="{e(nm)}">{WA_ICON}{e(m["cta"])}</a></div>')
@@ -767,7 +768,7 @@ def render(site, artifact=False):
     reviews = f'''
 <section class="sec" id="reviews" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Отзывы</p><h2 class="reveal">Что говорят <em>гости</em></h2></div><p class="reveal"><b style="color:var(--fg)">{site['rating']}</b> <span class="stars">★★★★★</span> · {site['reviews_n']} отзывов в 2ГИС.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Отзывы</p><h2 class="reveal">{site.get('reviews_title', 'Что говорят <em>гости</em>')}</h2></div><p class="reveal"><b style="color:var(--fg)">{str(site['rating']).replace('.', ',')}</b> <span class="stars">★★★★★</span> · {site['reviews_n']} отзывов в 2ГИС.</p></div>
     <div class="reviews">{revs}</div>
   </div>
 </section>'''

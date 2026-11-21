@@ -259,7 +259,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hl h3{font-family:var(--body);font-weight:700;font-size:18px;text-transform:none;letter-spacing:0;margin-bottom:4px}
 .hl p{color:var(--muted);font-size:15px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:70px}
-@media (max-width:820px){.stats{grid-template-columns:1fr 1fr}}
+@media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.stat{padding:20px 16px}.stat strong{font-size:calc(clamp(26px,8.5vw,40px)*var(--scale))}}
 .stat{padding:28px 24px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
 .stat strong{display:block;font-family:var(--display);font-weight:var(--hw);font-size:calc(clamp(40px,4.6vw,64px)*var(--scale));line-height:1;color:var(--accent);margin-bottom:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .stat>span{color:var(--muted);font-size:15px}
@@ -518,7 +519,7 @@ JS = r"""
     const human = (v) => { if (!v) return ''; const [y, m, d] = v.split('-'); return `${d}.${m}.${y}`; };
     const build = () => {
       const v = (id) => document.getElementById(id).value.trim();
-      const lines = [form.dataset.hello + ' в ' + form.dataset.name + '.'];
+      const lines = [form.dataset.hello + ' в «' + form.dataset.name + '».'];
       if (v('f-service')) lines.push(form.dataset.svc + ': ' + v('f-service'));
       const when = [human(v('f-date')), v('f-time')].filter(Boolean).join(', ');
       if (when) lines.push('Когда: ' + when);
@@ -616,7 +617,7 @@ def render(site, artifact=False):
     t = tokens(site)
     root_css = ':root{' + ';'.join(f'{k}:{v}' for k, v in t.items()) + '}'
     fams = [site.get('display', skin['display']), site.get('body', skin['body'])]
-    wa_hello = wa_link(phone, f"{m['hello']} в {name}.")
+    wa_hello = wa_link(phone, f"{m['hello']} в «{name}».")
 
     # ---------- первый экран
     lines = []
@@ -649,7 +650,7 @@ def render(site, artifact=False):
         <svg class="visual__ring" viewBox="0 0 200 200"><defs><path id="ring" d="M100 100 m-82 0 a82 82 0 1 1 164 0 a82 82 0 1 1 -164 0"/></defs><circle cx="100" cy="100" r="94"/><text><textPath href="#ring">{e(site.get('ring', name + ' · ' + site['niche'] + ' · Астана · '))}</textPath></text></svg>
         <div class="visual__icon">{icon(site['icon'])}</div>
       </div>
-      <div class="chip chip--1"><span class="dot"></span><div><small>{e(m['live'])}</small><b>{e(site['live'])}</b></div></div>
+      <div class="chip chip--1"><span class="dot"></span><div><small>{e(site.get('live_label', m['live']))}</small><b>{e(site['live'])}</b></div></div>
       <div class="chip chip--2"><div class="hl__ico" style="width:40px;height:40px">{icon('card')}</div><div><small>Цены</small><b>{e(site['price_from'])}</b></div></div>
       <div class="chip chip--3"><div class="hl__ico" style="width:40px;height:40px">{icon(site.get('chip_icon', 'award'))}</div><div><small>{e(site['badge'][0])}</small><b>{e(site['badge'][1])}</b></div></div>
     </div>
@@ -691,7 +692,7 @@ def render(site, artifact=False):
         for it in items:
             nm, desc, price = (it.split('|') + ['', ''])[:3]
             all_services.append(nm)
-            link = wa_link(phone, f"{m['hello']} в {name}. {m['per']}{nm}")
+            link = wa_link(phone, f"{m['hello']} в «{name}». {m['per']}{nm}")
             rows += (f'<div class="svc"><div><h3>{e(nm)}</h3>{f"<p>{e(desc)}</p>" if desc else ""}</div>'
                      f'<div class="svc__price">{e(price)}</div>'
                      f'<a class="svc__go" href="{e(link)}" target="_blank" rel="noopener" data-pick="{e(nm)}">{WA_ICON}{e(m["cta"])}</a></div>')
@@ -714,7 +715,7 @@ def render(site, artifact=False):
 <section class="sec" style="padding:20px 0 40px">
   <div class="wrap"><div class="promo reveal">
     <div><h2>{e(promo_t)}</h2><p>{e(promo_x)}</p></div>
-    <a class="btn magnetic" href="{e(wa_link(phone, f"{m['hello']} в {name}. Хочу воспользоваться акцией: {promo_t}"))}" target="_blank" rel="noopener">{WA_ICON}Получить в WhatsApp</a>
+    <a class="btn magnetic" href="{e(wa_link(phone, f"{m['hello']} в «{name}». Хочу воспользоваться акцией: {promo_t}"))}" target="_blank" rel="noopener">{WA_ICON}Получить в WhatsApp</a>
   </div></div>
 </section>'''
 
@@ -733,7 +734,7 @@ def render(site, artifact=False):
     stepsec = f'''
 <section class="sec" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Как это работает</p><h2 class="reveal">Четыре <em>простых</em> шага</h2></div></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Как это работает</p><h2 class="reveal">{["", "Один", "Два", "Три", "Четыре", "Пять", "Шесть"][len(steps_data)] if len(steps_data) <= 6 else len(steps_data)} <em>{"простой" if len(steps_data)==1 else "простых"}</em> {"шаг" if len(steps_data)==1 else ("шага" if 2<=len(steps_data)<=4 else "шагов")}</h2></div></div>
     <div class="steps">{steps}</div>
   </div>
 </section>'''
@@ -745,7 +746,7 @@ def render(site, artifact=False):
         team = f'''
 <section class="sec" id="team" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Команда</p><h2 class="reveal">{site.get('team_title', 'Люди, которым <em>доверяют</em>')}</h2></div><p class="reveal">Фото команды — из Instagram компании.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Команда</p><h2 class="reveal">{site.get('team_title', 'Люди, которым <em>доверяют</em>')}</h2></div><p class="reveal">{e(site.get('team_note', 'Мастера, к которым возвращаются.'))}</p></div>
     <div class="team">{cards}</div>
   </div>
 </section>'''
@@ -756,7 +757,7 @@ def render(site, artifact=False):
     gallery = f'''
 <section class="sec" id="gallery" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Галерея</p><h2 class="reveal">{site.get('gallery_title', 'Наши <em>работы</em>')}</h2></div><p class="reveal">Сюда встанут реальные фото из Instagram {e(site.get('insta', ''))}.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Галерея</p><h2 class="reveal">{site.get('gallery_title', 'Наши <em>работы</em>')}</h2></div><p class="reveal">{e(site.get('gallery_note', 'Больше работ — в Instagram ' + site.get('insta', '')))}</p></div>
     <div class="gallery">{figs}</div>
   </div>
 </section>'''
@@ -766,7 +767,7 @@ def render(site, artifact=False):
     reviews = f'''
 <section class="sec" id="reviews" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Отзывы</p><h2 class="reveal">Что говорят <em>гости</em></h2></div><p class="reveal"><b style="color:var(--fg)">{site['rating']}</b> <span class="stars">★★★★★</span> · {site['reviews_n']} отзывов в 2ГИС. Ниже — примеры, замените на реальные.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Отзывы</p><h2 class="reveal">Что говорят <em>гости</em></h2></div><p class="reveal"><b style="color:var(--fg)">{site['rating']}</b> <span class="stars">★★★★★</span> · {site['reviews_n']} отзывов в 2ГИС.</p></div>
     <div class="reviews">{revs}</div>
   </div>
 </section>'''

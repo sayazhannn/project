@@ -3,6 +3,7 @@
 Запуск: python3 tools/build_sites.py
 """
 from html import escape as e
+import re
 from urllib.parse import quote
 
 # ---------------------------------------------------------------- иконки (24×24, обводка)
@@ -100,27 +101,27 @@ FONT_WEIGHTS = {
 }
 
 MODES = {
-    'booking': dict(cta='Записаться', form='Онлайн-запись', live='Ближайшая запись', date='Дата визита',
+    'booking': dict(cta='Записаться', form='Онлайн-запись', live='Ближайшая запись', date='Дата визита', menu='Услуги и цены',
                     hello='Здравствуйте! Хочу записаться', per='Хочу записаться: ', svc='Услуга', send='Записаться в WhatsApp'),
-    'order':   dict(cta='Заказать', form='Оформить заказ', live='Доставка', date='Дата доставки',
+    'order':   dict(cta='Заказать', form='Оформить заказ', live='Доставка', date='Дата доставки', menu='Меню и цены',
                     hello='Здравствуйте! Хочу сделать заказ', per='Хочу заказать: ', svc='Что заказать', send='Отправить заказ в WhatsApp'),
-    'request': dict(cta='Оставить заявку', form='Заявка', live='Выезд мастера', date='Удобная дата',
+    'request': dict(cta='Оставить заявку', form='Заявка', live='Ближайшее время', date='Удобная дата', menu='Услуги и цены',
                     hello='Здравствуйте! Хочу оставить заявку', per='Интересует: ', svc='Услуга', send='Отправить заявку в WhatsApp'),
 }
 
 DEFAULT_STEPS = {
-    'booking': [('Выберите услугу', 'Посмотрите цены ниже или спросите администратора.'),
+    'booking': [('Выберите услугу', 'Посмотрите цены выше или спросите администратора.'),
                 ('Напишите в WhatsApp', 'Форма соберёт сообщение сама — останется нажать «Отправить».'),
                 ('Подтверждение', 'Администратор ответит в течение 15 минут и закрепит время.'),
-                ('Приходите', 'Напомним о визите за день, а после — подскажем по уходу.')],
-    'order':   [('Выберите', 'Позиции и цены — в меню ниже.'),
+                ('Приходите', 'Напомним о визите за день.')],
+    'order':   [('Выберите', 'Позиции и цены — в меню выше.'),
                 ('Напишите в WhatsApp', 'Форма соберёт заказ в одно сообщение.'),
                 ('Подтверждение', 'Уточним детали, время и способ оплаты.'),
                 ('Получите', 'Доставим или подготовим к самовывозу точно ко времени.')],
     'request': [('Заявка', 'Опишите задачу в форме — она уйдёт в WhatsApp.'),
-                ('Консультация', 'Перезвоним, уточним детали и назовём ориентир по цене.'),
-                ('Договор', 'Фиксируем объём работ, сроки и стоимость.'),
-                ('Результат', 'Выполняем работу и даём гарантию.')],
+                ('Консультация', 'Уточним детали в WhatsApp и назовём ориентир по цене.'),
+                ('Договорённость', 'Согласуем объём, сроки и стоимость.'),
+                ('Результат', 'Делаем всё в оговорённый срок.')],
 }
 
 COMMON_FAQ = [('Как можно оплатить?', 'Наличными, картой и через Kaspi QR. Для юрлиц — по счёту.')]
@@ -135,6 +136,38 @@ def lum(hex_):
     r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
     f = lambda c: c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+
+
+def _hex(c):
+    return '#' + ''.join(f'{max(0, min(255, round(v))):02X}' for v in c)
+
+
+def _rgb(hex_):
+    h = hex_.lstrip('#')
+    return [int(h[i:i + 2], 16) for i in (0, 2, 4)]
+
+
+def contrast(a, b):
+    la, lb = lum(a), lum(b)
+    return (max(la, lb) + .05) / (min(la, lb) + .05)
+
+
+def ink_for(color, bg, target):
+    """Затемняет (на светлом фоне) или осветляет (на тёмном) цвет, пока контраст с фоном не станет >= target."""
+    to = (0, 0, 0) if lum(bg) > 0.2 else (255, 255, 255)
+    c = _rgb(color)
+    for i in range(21):
+        k = i / 20
+        cur = _hex([c[j] + (to[j] - c[j]) * k for j in range(3)])
+        if contrast(cur, bg) >= target:
+            return cur
+    return _hex(to)
+
+
+def nb(text):
+    """Неразрывные пробелы в ценах: «15 000 ₸» не разрывается между строками."""
+    text = re.sub(r'(\d) (?=\d{3}\b)', '\\1\u00a0', text)
+    return text.replace(' ₸', '\u00a0₸')
 
 
 def wa_link(phone, text):
@@ -171,7 +204,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:50px}
 .sec-head h2{font-size:calc(clamp(36px,5.2vw,72px)*var(--scale));max-width:820px;margin-top:14px}
 .sec-head p{max-width:420px;color:var(--muted)}
-.sec-head h2 em,.hero h1 em{font-style:var(--em-style);color:var(--accent)}
+.sec-head h2 em,.hero h1 em{font-style:var(--em-style);color:var(--accent-big)}
 
 /* кнопки */
 .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 26px;border:0;border-radius:var(--rb);background:var(--accent);color:var(--on-accent);font-weight:600;font-size:15px;line-height:1.2;cursor:pointer;overflow:hidden;isolation:isolate;transition:transform .45s var(--ease),color .4s,box-shadow .4s}
@@ -179,8 +212,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn:hover::before{transform:none}
 .btn:hover{color:var(--bg)}
 .btn--ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line-strong)}
-.btn--wa{background:#25D366;color:#fff}
-.btn--wa::before{background:#128C4B}
+.btn--wa{background:#0E7A3E;color:#fff}
+.btn--wa::before{background:#0A5A2E}
 .btn--wa:hover{color:#fff}
 .btn--small{padding:11px 18px;font-size:14px}
 
@@ -196,7 +229,23 @@ button,input,select,textarea{font:inherit;color:inherit}
 .nav__links a{position:relative}
 .nav__links a::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
 .nav__links a:hover::after{transform:scaleX(1);transform-origin:left}
-@media (max-width:900px){.nav__links{display:none}}
+.nav__burger{display:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--surface-2);color:var(--fg);cursor:pointer;place-items:center;padding:0}
+.nav__burger span,.nav__burger span::before,.nav__burger span::after{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .4s var(--ease),opacity .3s}
+.nav__burger span{position:relative}
+.nav__burger span::before,.nav__burger span::after{content:"";position:absolute;left:0}
+.nav__burger span::before{top:-6px}.nav__burger span::after{top:6px}
+.nav.is-open .nav__burger span{background:transparent}
+.nav.is-open .nav__burger span::before{transform:translateY(6px) rotate(45deg)}
+.nav.is-open .nav__burger span::after{transform:translateY(-6px) rotate(-45deg)}
+.nav__end{display:flex;align-items:center;gap:10px}
+@media (max-width:900px){
+ .nav__burger{display:grid}
+ .nav__links{display:none}
+ .nav.is-open{background:var(--bg);box-shadow:0 1px 0 var(--line)}
+ .nav.is-open .nav__links{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;left:0;right:0;padding:8px max(20px,5vw) 20px;background:var(--bg);box-shadow:0 24px 40px -24px rgba(0,0,0,.35);font-size:18px}
+ .nav.is-open .nav__links a{padding:14px 0;border-bottom:1px solid var(--line)}
+ .nav.is-open .nav__links a::after{display:none}
+}
 @media (max-width:420px){.nav .btn span{display:none}.nav .btn{padding:11px}}
 
 /* первый экран */
@@ -206,7 +255,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hero__bg span:nth-child(1){width:42vw;height:42vw;background:var(--accent);top:-14vw;right:-12vw}
 .hero__bg span:nth-child(2){width:30vw;height:30vw;background:var(--accent2);bottom:-12vw;left:-10vw;animation-delay:-6s}
 @keyframes blob{to{translate:4vw 3vw;scale:1.15}}
-.hero .wrap{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center}
 @media (max-width:940px){.hero .wrap{grid-template-columns:1fr}}
 .hero h1{font-size:calc(clamp(48px,7.4vw,112px)*var(--scale));margin:22px 0 26px}
 .line-mask{display:block;overflow:hidden;padding-bottom:.08em}
@@ -258,10 +307,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hl__ico{width:48px;height:48px;border-radius:calc(var(--r)*.5 + 6px);display:grid;place-items:center;background:var(--soft-accent);color:var(--accent);flex:none}
 .hl h3{font-family:var(--body);font-weight:700;font-size:18px;text-transform:none;letter-spacing:0;margin-bottom:4px}
 .hl p{color:var(--muted);font-size:15px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:70px}
-@media (max-width:820px){.stats{grid-template-columns:1fr 1fr}}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:70px}
+@media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.stat{padding:22px 16px}.stat strong{font-size:calc(clamp(26px,8vw,40px)*var(--scale)) !important}}
 .stat{padding:28px 24px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
-.stat strong{display:block;font-family:var(--display);font-weight:var(--hw);font-size:calc(clamp(40px,4.6vw,64px)*var(--scale));line-height:1;color:var(--accent);margin-bottom:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat strong{display:block;font-family:var(--display);font-weight:var(--hw);font-size:calc(clamp(40px,4.6vw,64px)*var(--scale));line-height:1;color:var(--accent-big);margin-bottom:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .stat>span{color:var(--muted);font-size:15px}
 
 /* услуги */
@@ -271,15 +321,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .panel[hidden]{display:none}
 .panel{animation:fade .6s var(--ease)}
 @keyframes fade{from{opacity:0;transform:translateY(12px)}}
-.svc{display:grid;grid-template-columns:1fr auto auto;gap:6px 24px;align-items:center;padding:22px 0;border-bottom:1px solid var(--line);transition:padding .5s var(--ease)}
+.svc{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 24px;align-items:center;padding:22px 0;border-bottom:1px solid var(--line);transition:padding .5s var(--ease)}
 .svc:hover{padding-left:12px}
 .svc h3{font-family:var(--body);font-weight:700;font-size:19px;text-transform:none;letter-spacing:0}
 .svc p{color:var(--muted);font-size:15px;margin-top:4px}
 .svc__price{font-family:var(--display);font-weight:var(--hw);font-size:calc(24px*var(--scale));white-space:nowrap;font-variant-numeric:tabular-nums}
 .svc__go{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:var(--soft-accent);color:var(--accent-ink);font-size:14px;font-weight:600;white-space:nowrap;transition:background .3s,color .3s}
-.svc__go:hover{background:#25D366;color:#fff}
+.svc__go:hover{background:#0E7A3E;color:#fff}
 .svc__go .wa-ico{width:16px;height:16px}
-@media (max-width:640px){.svc{grid-template-columns:1fr auto}.svc__go{grid-column:1/-1;justify-self:start}}
+@media (max-width:640px){.svc{grid-template-columns:minmax(0,1fr) auto}.svc__go{grid-column:1/-1;justify-self:start}.svc__price{white-space:normal;text-align:right;max-width:46vw;font-size:calc(19px*var(--scale))}}
 .note{margin-top:22px;color:var(--muted);font-size:14px}
 
 /* акция */
@@ -338,8 +388,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 @media (max-width:760px){.gallery{grid-template-columns:1fr 1fr;grid-auto-rows:170px}}
 .gallery figure{position:relative;margin:0;border-radius:var(--r);overflow:hidden;display:flex;align-items:flex-end;padding:18px;color:#fff}
 .gallery figure:nth-child(1){grid-row:span 2}
-.gallery figure:nth-child(5){grid-column:span 2}
-@media (max-width:760px){.gallery figure:nth-child(5){grid-column:auto}}
+.gallery figure:nth-child(4),.gallery figure:nth-child(5){grid-column:span 2}
+.gallery figure:nth-child(5){grid-column:2/span 2}
+@media (max-width:760px){.gallery figure:nth-child(4),.gallery figure:nth-child(5){grid-column:auto}.gallery figure:nth-child(6){grid-column:span 2}}
 .gallery figure::before{content:"";position:absolute;inset:0;background:var(--g);transition:transform 1s var(--ease)}
 .gallery figure:hover::before{transform:scale(1.07)}
 .gallery figure::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.45))}
@@ -396,7 +447,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:
 footer.site .logo{color:var(--fg)}
 
 /* плавающая кнопка WhatsApp */
-.wa-float{position:fixed;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:10px;padding:14px 18px 14px 14px;border-radius:999px;background:#25D366;color:#fff;font-weight:700;font-size:15px;box-shadow:0 16px 36px -12px rgba(18,140,75,.7);transition:transform .4s var(--ease)}
+.wa-float{position:fixed;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:10px;padding:14px 18px 14px 14px;border-radius:999px;background:#0E7A3E;color:#fff;font-weight:700;font-size:15px;box-shadow:0 16px 36px -12px rgba(14,122,62,.7);transition:transform .4s var(--ease)}
 .wa-float:hover{transform:translateY(-3px) scale(1.03)}
 .wa-float .wa-ico{width:28px;height:28px}
 .wa-float::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(37,211,102,.55);animation:waping 2.4s infinite}
@@ -490,7 +541,7 @@ JS = r"""
   const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } }), { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-  const fmt = (n, d) => n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const fmt = (n, d) => n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ' ').replace('.', ',');
   const cio = new IntersectionObserver((es) => es.forEach((en) => {
     if (!en.isIntersecting) return;
     const el = en.target, to = parseFloat(el.dataset.count), d = parseInt(el.dataset.decimals || '0', 10), dur = reduce ? 0 : 1800, t0 = performance.now();
@@ -513,14 +564,15 @@ JS = r"""
   if (form) {
     const send = document.getElementById('f-send'), preview = document.getElementById('f-preview');
     const dateEl = document.getElementById('f-date');
-    const today = new Date(); const iso = (d) => d.toISOString().slice(0, 10);
+    const today = new Date(); const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
     dateEl.min = iso(today);
     const human = (v) => { if (!v) return ''; const [y, m, d] = v.split('-'); return `${d}.${m}.${y}`; };
     const build = () => {
       const v = (id) => document.getElementById(id).value.trim();
-      const lines = [form.dataset.hello + ' в ' + form.dataset.name + '.'];
+      const lines = [form.dataset.hello + ' ' + form.dataset.name + '.'];
       if (v('f-service')) lines.push(form.dataset.svc + ': ' + v('f-service'));
-      const when = [human(v('f-date')), v('f-time')].filter(Boolean).join(', ');
+      const asap = v('f-time') === 'Как можно скорее';
+      const when = asap ? 'как можно скорее' : [human(v('f-date')), v('f-time')].filter(Boolean).join(', ');
       if (when) lines.push('Когда: ' + when);
       if (v('f-name')) lines.push('Имя: ' + v('f-name'));
       if (v('f-comment')) lines.push('Комментарий: ' + v('f-comment'));
@@ -529,14 +581,29 @@ JS = r"""
       preview.textContent = text;
     };
     form.addEventListener('input', build); form.addEventListener('change', build);
-    form.addEventListener('submit', (ev) => ev.preventDefault());
+    const check = () => {
+      const bad = [...form.querySelectorAll('[required]')].find((el) => !el.value.trim());
+      if (bad) { bad.reportValidity(); bad.focus(); return false; }
+      if (dateEl.value && dateEl.value < dateEl.min) { dateEl.setCustomValidity('Выберите дату не раньше сегодняшней'); dateEl.reportValidity(); dateEl.setCustomValidity(''); dateEl.focus(); return false; }
+      return true;
+    };
+    send.addEventListener('click', (ev) => { build(); if (!check()) ev.preventDefault(); });
+    form.addEventListener('submit', (ev) => { ev.preventDefault(); send.click(); });
     // Кнопки «Записаться» у услуг подставляют услугу в форму
     document.querySelectorAll('[data-pick]').forEach((a) => a.addEventListener('click', () => { document.getElementById('f-service').value = a.dataset.pick; build(); }));
     build();
   }
 
   // Шапка и параллакс
-  const nav = document.querySelector('.nav'); const par = [...document.querySelectorAll('[data-speed]')]; let last = 0;
+  const nav = document.querySelector('.nav');
+  const burger = document.querySelector('.nav__burger');
+  if (burger) {
+    const setOpen = (o) => { nav.classList.toggle('is-open', o); burger.setAttribute('aria-expanded', o); burger.setAttribute('aria-label', o ? 'Закрыть меню' : 'Меню'); };
+    burger.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    nav.querySelectorAll('.nav__links a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    addEventListener('keydown', (ev) => { if (ev.key === 'Escape') setOpen(false); });
+  }
+  const par = [...document.querySelectorAll('[data-speed]')]; let last = 0;
   const onScroll = () => {
     const y = window.scrollY;
     nav.classList.toggle('is-scrolled', y > 20); nav.classList.toggle('is-hidden', y > last && y > 600); last = y;
@@ -570,14 +637,16 @@ def tokens(site):
     bg, fg, accent, accent2 = site['pal']
     skin = SKINS[site['skin']]
     dark = lum(bg) < 0.2
-    on_accent = '#111111' if lum(accent) > 0.38 else '#FFFFFF'
-    # контрастный цвет для текста акцента на светлом фоне
-    accent_ink = accent if (dark or lum(accent) < 0.3) else mix(accent, 55, '#000')
+    on_accent = '#111111' if contrast('#111111', accent) > contrast('#FFFFFF', accent) else '#FFFFFF'
+    # акцент для мелкого текста (4.5:1) и для крупных заголовков и цифр (3:1)
+    accent_ink = ink_for(accent, bg, 4.5)
+    accent_big = ink_for(accent, bg, 3)
     panel_dark = dark or site['skin'] in ('luxe', 'industrial')
     return {
         '--bg': bg, '--fg': fg, '--accent': accent, '--accent2': accent2,
         '--on-accent': on_accent,
         '--accent-ink': accent_ink,
+        '--accent-big': accent_big,
         '--muted': mix(fg, 66, bg),
         '--line': mix(fg, 13, 'transparent'),
         '--line-strong': mix(fg, 26, 'transparent'),
@@ -596,6 +665,7 @@ def tokens(site):
         '--scale': str(site.get('scale', skin['scale'])),
         '--em-style': 'italic' if site['skin'] in ('editorial', 'luxe') else 'normal',
         '--ease': 'cubic-bezier(.22,1,.36,1)',
+        'color-scheme': 'dark' if dark else 'light',
     }
 
 
@@ -616,7 +686,10 @@ def render(site, artifact=False):
     t = tokens(site)
     root_css = ':root{' + ';'.join(f'{k}:{v}' for k, v in t.items()) + '}'
     fams = [site.get('display', skin['display']), site.get('body', skin['body'])]
-    wa_hello = wa_link(phone, f"{m['hello']} в {name}.")
+    name_in = site.get('name_in', f'в «{name}»')  # с предлогом: «во «Взгляд»», «в компанию «Право»»
+    wa_hello = wa_link(phone, f"{m['hello']} {name_in}.")
+    rating = site['rating'].replace('.', ',')
+    menu_label = site.get('menu_label', m['menu'])
 
     # ---------- первый экран
     lines = []
@@ -625,7 +698,10 @@ def render(site, artifact=False):
         lines.append(f'<span class="line-mask">{inner}</span>')
     # Длинные заголовки уменьшаем, чтобы кнопка записи оставалась на первом экране
     total = sum(len(x) for x in site['h1'])
-    h1_cls = ' class="h1--xlong"' if total > 34 else (' class="h1--long"' if total > 26 or max(len(x) for x in site['h1']) > 14 else '')
+    mx = max(len(x) for x in site['h1'])
+    longest = max(len(w) for x in site['h1'] for w in x.split())
+    h1_cls = (' class="h1--xlong"' if total > 34 or mx > 16 or longest >= 12
+              else (' class="h1--long"' if total > 26 or mx > 14 or longest >= 10 else ''))
     initials = site.get('avatars', 'АМД')
     hero = f'''
 <section class="hero" id="top">
@@ -634,14 +710,14 @@ def render(site, artifact=False):
     <div>
       <p class="eyebrow reveal">{e(site['niche'])} · Астана</p>
       <h1{h1_cls}>{''.join(lines)}</h1>
-      <p class="hero__sub reveal" style="--d:.45s">{e(site['sub'])}</p>
+      <p class="hero__sub reveal" style="--d:.45s">{e(nb(site['sub']))}</p>
       <div class="hero__cta reveal" style="--d:.55s">
         <a class="btn btn--wa magnetic" href="{e(wa_hello)}" target="_blank" rel="noopener">{WA_ICON}{e(m['cta'])} в WhatsApp</a>
-        <a class="btn btn--ghost magnetic" href="#services">Услуги и цены</a>
+        <a class="btn btn--ghost magnetic" href="#services">{e(menu_label)}</a>
       </div>
       <div class="trust reveal" style="--d:.65s">
         <div class="avatars" aria-hidden="true"><i>{initials[0]}</i><i>{initials[1]}</i><i>{initials[2]}</i></div>
-        <div><b>{site['rating']}</b> <span class="stars">★★★★★</span><br>{site['reviews_n']} отзывов в 2ГИС</div>
+        <div><b>{rating}</b> <span class="stars">★★★★★</span><br>{site['reviews_n']} отзывов в 2ГИС</div>
       </div>
     </div>
     <div class="visual reveal" style="--d:.25s" data-speed="-0.05" aria-hidden="true">
@@ -649,9 +725,9 @@ def render(site, artifact=False):
         <svg class="visual__ring" viewBox="0 0 200 200"><defs><path id="ring" d="M100 100 m-82 0 a82 82 0 1 1 164 0 a82 82 0 1 1 -164 0"/></defs><circle cx="100" cy="100" r="94"/><text><textPath href="#ring">{e(site.get('ring', name + ' · ' + site['niche'] + ' · Астана · '))}</textPath></text></svg>
         <div class="visual__icon">{icon(site['icon'])}</div>
       </div>
-      <div class="chip chip--1"><span class="dot"></span><div><small>{e(m['live'])}</small><b>{e(site['live'])}</b></div></div>
-      <div class="chip chip--2"><div class="hl__ico" style="width:40px;height:40px">{icon('card')}</div><div><small>Цены</small><b>{e(site['price_from'])}</b></div></div>
-      <div class="chip chip--3"><div class="hl__ico" style="width:40px;height:40px">{icon(site.get('chip_icon', 'award'))}</div><div><small>{e(site['badge'][0])}</small><b>{e(site['badge'][1])}</b></div></div>
+      <div class="chip chip--1"><span class="dot"></span><div><small>{e(site.get('live_label', m['live']))}</small><b>{e(nb(site['live']))}</b></div></div>
+      <div class="chip chip--2"><div class="hl__ico" style="width:40px;height:40px">{icon('card')}</div><div><small>Цены</small><b>{e(nb(site['price_from']))}</b></div></div>
+      <div class="chip chip--3"><div class="hl__ico" style="width:40px;height:40px">{icon(site.get('chip_icon', 'award'))}</div><div><small>{e(site['badge'][0])}</small><b>{e(nb(site['badge'][1]))}</b></div></div>
     </div>
   </div>
 </section>'''
@@ -661,13 +737,13 @@ def render(site, artifact=False):
     marquee = f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{track}{track}</div></div>'
 
     # ---------- о нас
-    hls = ''.join(f'<div class="hl reveal" style="--d:{i * .08:.2f}s"><div class="hl__ico">{icon(ic)}</div><div><h3>{e(ti)}</h3><p>{e(tx)}</p></div></div>'
+    hls = ''.join(f'<div class="hl reveal" style="--d:{i * .08:.2f}s"><div class="hl__ico">{icon(ic)}</div><div><h3>{e(ti)}</h3><p>{e(nb(tx))}</p></div></div>'
                   for i, (ic, ti, tx) in enumerate(site['hl']))
     stats = ''
     for i, st in enumerate(site['stats']):
         num, suf, label = st
         dec = 1 if isinstance(num, float) else 0
-        stats += f'<div class="stat reveal" style="--d:{i * .08:.2f}s"><strong><span data-count="{num}" data-decimals="{dec}">{num}</span>{e(suf)}</strong><span>{e(label)}</span></div>'
+        stats += f'<div class="stat reveal" style="--d:{i * .08:.2f}s"><strong><span data-count="{num}" data-decimals="{dec}">{str(num).replace(".", ",")}</span>{e(suf)}</strong><span>{e(label)}</span></div>'
     about = f'''
 <section class="sec" id="about">
   <div class="wrap">
@@ -691,7 +767,7 @@ def render(site, artifact=False):
         for it in items:
             nm, desc, price = (it.split('|') + ['', ''])[:3]
             all_services.append(nm)
-            link = wa_link(phone, f"{m['hello']} в {name}. {m['per']}{nm}")
+            link = wa_link(phone, f"{m['hello']} {name_in}.\n{m['svc']}: {nm}")
             rows += (f'<div class="svc"><div><h3>{e(nm)}</h3>{f"<p>{e(desc)}</p>" if desc else ""}</div>'
                      f'<div class="svc__price">{e(price)}</div>'
                      f'<a class="svc__go" href="{e(link)}" target="_blank" rel="noopener" data-pick="{e(nm)}">{WA_ICON}{e(m["cta"])}</a></div>')
@@ -700,7 +776,7 @@ def render(site, artifact=False):
 <section class="sec" id="services" style="padding-top:40px">
   <div class="wrap" data-tabs>
     <div class="sec-head">
-      <div><p class="eyebrow reveal">Услуги и цены</p><h2 class="reveal">{site.get('svc_title', 'Что мы <em>делаем</em>')}</h2></div>
+      <div><p class="eyebrow reveal">{e(menu_label)}</p><h2 class="reveal">{site.get('svc_title', 'Что мы <em>делаем</em>')}</h2></div>
       <p class="reveal">{e(site.get('svc_note', 'Нажмите «' + m['cta'] + '» напротив услуги — откроется WhatsApp с готовым сообщением.'))}</p>
     </div>
     <div class="tabs reveal" role="tablist">{tabs}</div>
@@ -713,12 +789,12 @@ def render(site, artifact=False):
     promo = f'''
 <section class="sec" style="padding:20px 0 40px">
   <div class="wrap"><div class="promo reveal">
-    <div><h2>{e(promo_t)}</h2><p>{e(promo_x)}</p></div>
-    <a class="btn magnetic" href="{e(wa_link(phone, f"{m['hello']} в {name}. Хочу воспользоваться акцией: {promo_t}"))}" target="_blank" rel="noopener">{WA_ICON}Получить в WhatsApp</a>
+    <div><h2>{e(nb(promo_t))}</h2><p>{e(nb(promo_x))}</p></div>
+    <a class="btn magnetic" href="{e(wa_link(phone, f"{m['hello']} {name_in}. Хочу воспользоваться акцией: {promo_t}"))}" target="_blank" rel="noopener">{WA_ICON}Получить в WhatsApp</a>
   </div></div>
 </section>'''
 
-    adv = ''.join(f'<article class="adv__item tilt reveal" style="--d:{(i % 3) * .08:.2f}s"><div class="hl__ico">{icon(ic)}</div><h3>{e(ti)}</h3><p>{e(tx)}</p></article>'
+    adv = ''.join(f'<article class="adv__item tilt reveal" style="--d:{(i % 3) * .08:.2f}s"><div class="hl__ico">{icon(ic)}</div><h3>{e(ti)}</h3><p>{e(nb(tx))}</p></article>'
                   for i, (ic, ti, tx) in enumerate(site['adv']))
     advs = f'''
 <section class="sec" id="why">
@@ -745,7 +821,7 @@ def render(site, artifact=False):
         team = f'''
 <section class="sec" id="team" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Команда</p><h2 class="reveal">{site.get('team_title', 'Люди, которым <em>доверяют</em>')}</h2></div><p class="reveal">Фото команды — из Instagram компании.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Команда</p><h2 class="reveal">{site.get('team_title', 'Люди, которым <em>доверяют</em>')}</h2></div></div>
     <div class="team">{cards}</div>
   </div>
 </section>'''
@@ -756,7 +832,7 @@ def render(site, artifact=False):
     gallery = f'''
 <section class="sec" id="gallery" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Галерея</p><h2 class="reveal">{site.get('gallery_title', 'Наши <em>работы</em>')}</h2></div><p class="reveal">Сюда встанут реальные фото из Instagram {e(site.get('insta', ''))}.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Галерея</p><h2 class="reveal">{site.get('gallery_title', 'Наши <em>работы</em>')}</h2></div></div>
     <div class="gallery">{figs}</div>
   </div>
 </section>'''
@@ -766,12 +842,12 @@ def render(site, artifact=False):
     reviews = f'''
 <section class="sec" id="reviews" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow reveal">Отзывы</p><h2 class="reveal">Что говорят <em>гости</em></h2></div><p class="reveal"><b style="color:var(--fg)">{site['rating']}</b> <span class="stars">★★★★★</span> · {site['reviews_n']} отзывов в 2ГИС. Ниже — примеры, замените на реальные.</p></div>
+    <div class="sec-head"><div><p class="eyebrow reveal">Отзывы</p><h2 class="reveal">{site.get('reviews_title', 'Что говорят <em>клиенты</em>')}</h2></div><p class="reveal"><b style="color:var(--fg)">{rating}</b> <span class="stars">★★★★★</span> · {site['reviews_n']} отзывов в 2ГИС.</p></div>
     <div class="reviews">{revs}</div>
   </div>
 </section>'''
 
-    faqs = ''.join(f'<details class="reveal"><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in site['faq'] + COMMON_FAQ)
+    faqs = ''.join(f'<details class="reveal"><summary>{e(q)}</summary><p>{e(nb(a))}</p></details>' for q, a in site['faq'] + COMMON_FAQ)
     faq = f'''
 <section class="sec" id="faq" style="padding-top:20px">
   <div class="wrap">
@@ -783,7 +859,7 @@ def render(site, artifact=False):
     # ---------- запись + контакты
     opts = ''.join(f'<option>{e(s)}</option>' for s in all_services)
     times = site.get('times') or ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
-    if site['mode'] == 'order':
+    if site['mode'] == 'order' and site.get('asap', True):
         times = ['Как можно скорее'] + times
     topts = ''.join(f'<option>{e(x)}</option>' for x in times)
     hours = ''.join(f'<tr><td>{e(d)}</td><td>{e(h)}</td></tr>' for d, h in site['hours'])
@@ -797,7 +873,7 @@ def render(site, artifact=False):
       <div class="contacts reveal">
         <div class="contact"><div class="hl__ico">{icon('pin')}</div><div><small>Адрес</small><b>{e(site['addr'])}</b></div></div>
         <div class="contact"><div class="hl__ico">{icon('clock')}</div><div style="flex:1"><small>Часы работы</small><table class="hours">{hours}</table></div></div>
-        <div class="contact"><div class="hl__ico">{icon('chat')}</div><div><small>Телефон и WhatsApp</small><b>{e(phone_h)}</b></div></div>
+        <div class="contact"><div class="hl__ico">{icon('chat')}</div><div><small>Телефон и WhatsApp</small><b><a href="tel:+{phone}">{e(phone_h)}</a></b></div></div>
         <div class="contact"><div class="hl__ico">{icon('camera')}</div><div><small>Instagram</small><b>{e(site.get('insta', '@instagram'))}</b></div></div>
       </div>
       <div class="mapbox reveal" aria-label="Схема проезда">
@@ -810,12 +886,12 @@ def render(site, artifact=False):
         <a class="btn btn--small" href="{e(site.get('gis', 'https://2gis.kz/astana'))}" target="_blank" rel="noopener">{icon('map')}Открыть в 2ГИС</a>
       </div>
     </div>
-    <form class="form reveal" id="book-form" data-phone="{phone}" data-name="{e(name)}" data-hello="{e(m['hello'])}" data-svc="{e(m['svc'])}" style="--d:.1s">
+    <form class="form reveal" id="book-form" data-phone="{phone}" data-name="{e(name_in)}" data-hello="{e(m['hello'])}" data-svc="{e(m['svc'])}" style="--d:.1s">
       <h3>{e(m['form'])}</h3>
-      <div class="field"><label for="f-name">Ваше имя</label><input id="f-name" type="text" placeholder="Например, Айгерим" autocomplete="name"></div>
-      <div class="field"><label for="f-service">{e(m['svc'])}</label><select id="f-service"><option value="">Выберите из списка</option>{opts}</select></div>
+      <div class="field"><label for="f-name">Ваше имя</label><input id="f-name" type="text" placeholder="Например, Айгерим" autocomplete="name" required></div>
+      <div class="field"><label for="f-service">{e(m['svc'])}</label><select id="f-service" required><option value="">Выберите из списка</option>{opts}</select></div>
       <div class="form__row">
-        <div class="field"><label for="f-date">{e(m['date'])}</label><input id="f-date" type="date"></div>
+        <div class="field"><label for="f-date">{e(site.get('date_label', m['date']))}</label><input id="f-date" type="date"></div>
         <div class="field"><label for="f-time">Время</label><select id="f-time"><option value="">Любое</option>{topts}</select></div>
       </div>
       <div class="field"><label for="f-comment">Комментарий</label><textarea id="f-comment" placeholder="{e(site.get('comment_ph', 'Пожелания, вопросы'))}"></textarea></div>
@@ -829,14 +905,17 @@ def render(site, artifact=False):
     nav = f'''
 <header class="nav"><div class="wrap">
   <a href="#top" class="logo"><span class="logo__mark">{icon(site['icon'])}</span>{e(name)}</a>
-  <nav class="nav__links"><a href="#about">О нас</a><a href="#services">Цены</a><a href="#reviews">Отзывы</a><a href="#contacts">Контакты</a></nav>
-  <a class="btn btn--wa btn--small magnetic" href="{e(wa_hello)}" target="_blank" rel="noopener">{WA_ICON}<span>{e(m['cta'])}</span></a>
+  <nav class="nav__links" id="nav-links"><a href="#about">О нас</a><a href="#services">Цены</a><a href="#reviews">Отзывы</a><a href="#contacts">Контакты</a></nav>
+  <div class="nav__end">
+    <a class="btn btn--wa btn--small magnetic" href="{e(wa_hello)}" target="_blank" rel="noopener" aria-label="{e(m['cta'])} в WhatsApp">{WA_ICON}<span>{e(m['cta'])}</span></a>
+    <button class="nav__burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Меню"><span></span></button>
+  </div>
 </div></header>'''
 
     footer = f'''
 <footer class="site"><div class="wrap">
   <a href="#top" class="logo"><span class="logo__mark">{icon(site['icon'])}</span>{e(name)}</a>
-  <div>{e(site['addr'])}<br>{e(phone_h)} · {e(site.get('insta', ''))}</div>
+  <div>{e(site['addr'])}<br><a href="tel:+{phone}">{e(phone_h)}</a> · {e(site.get('insta', ''))}</div>
   <div>Шаблон сайта. Название и данные вымышленные.</div>
 </div></footer>
 <a class="wa-float" href="{e(wa_hello)}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">{WA_ICON}<span>Написать нам</span></a>'''

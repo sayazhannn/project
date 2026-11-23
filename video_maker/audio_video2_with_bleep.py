@@ -10,13 +10,13 @@ lines=["Хватит жалеть себя.",None,"Никто не сделае�
 durs=[]
 for i,t in enumerate(lines):
     if t is None:
-        tts("Всем на твои проблемы","a/1a.wav"); tts("похер","a/1b.wav")
+        tts("Всем на твои проблемы","a/1a.wav"); tts("поебать","a/1b.wav")
         a,sr=rd("a/1a.wav"); b,_=rd("a/1b.wav")
         n=len(b); tt=np.arange(n)/sr
         beep=np.sin(2*np.pi*1000*tt)*0.35; beep[:200]*=np.linspace(0,1,200); beep[-200:]*=np.linspace(1,0,200)
         x=np.concatenate([a,np.zeros(int(sr*0.08)),beep]).astype(np.float32)
         w=wave.open("a/1.wav","wb");w.setnchannels(1);w.setsampwidth(2);w.setframerate(sr);w.writeframes((x*32767).astype(np.int16).tobytes());w.close()
-        durs.append(len(x)/sr)
+        durs.append(len(x)/sr); BEEP=(len(a)+int(sr*0.08))/sr
     else:
         tts(t,f"a/{i}.wav"); a,sr=rd(f"a/{i}.wav"); durs.append(len(a)/sr)
-json.dump({"durs":durs,"sr":sr},open("a/meta.json","w")); print([round(d,1) for d in durs],sum(durs))
+json.dump({"durs":durs,"sr":sr,"beep_at":BEEP},open("a/meta.json","w")); print([round(d,1) for d in durs],sum(durs))

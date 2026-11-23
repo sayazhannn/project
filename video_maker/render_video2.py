@@ -1,7 +1,8 @@
 import json, math, sys, subprocess, numpy as np, random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-W,H,FPS,S=1280,720,30,2
-meta=json.load(open("a/meta.json")); D=meta["durs"]
+W,H,FPS,S=1280,720,30,3
+OW,OH=1920,1080
+meta=json.load(open("a/meta.json")); D=meta["durs"]; BEEP=meta["beep_at"]
 LEAD,PAD=0.15,0.3
 starts=[];t=0.0
 for d in D: starts.append(t); t+=LEAD+d+PAD
@@ -23,12 +24,15 @@ def sm(x): x=clamp(x); return x*x*(3-2*x)
 def prog(t,a,b): return clamp((t-a)/(b-a))
 
 random.seed(3)
-STARS=[(random.randint(0,W),random.randint(0,H),random.randint(25,70),random.random()*6) for _ in range(70)]
-def background(t):
-    im=Image.new("L",(W,H),0); d=ImageDraw.Draw(im)
-    for x,y,b,ph in STARS:
-        v=int(b*(0.6+0.4*math.sin(t*1.5+ph))); d.point((x,y),fill=v)
-    return np.array(im,dtype=np.float32)
+STARS=[(random.uniform(0,W),random.uniform(0,H),random.uniform(.25,.7),random.random()*6) for _ in range(90)]
+DUST=[(random.uniform(0,W),random.uniform(0,H),random.uniform(6,16),random.uniform(1.2,2.6),random.uniform(.10,.24),random.random()*6) for _ in range(26)]
+yy_,xx_=np.mgrid[0:OH,0:OW].astype(np.float32)
+RR=(((xx_-OW/2)/(OW/2))**2+((yy_-OH*0.46)/(OH/2))**2)
+BG=(14*np.clip(1-RR*0.9,0,1)**2).astype(np.float32)
+VIG=(1-0.30*np.clip(RR/2,0,1)).astype(np.float32)
+def dust(c,t):
+    for x,y,b,ph in STARS: c.circ(x,y,0.9,a=b*(0.65+0.35*math.sin(t*1.4+ph))*.55,fill=True)
+    for x,y,sp,r,al,ph in DUST: c.circ(x+14*math.sin(t*.35+ph),(y-t*sp)%H,r,a=al,fill=True)
 
 class C:
     def __init__(s): s.im=Image.new("L",(W*S,H*S),0); s.d=ImageDraw.Draw(s.im)
@@ -47,9 +51,16 @@ class C:
     def text(s,txt,cx,cy,sz,a=1,rise=0,dx=0):
         if a<=0: return
         f=F(sz); s.d.text(((cx+dx)*S,(cy+rise)*S),txt,font=f,fill=s.v(a),anchor="mm")
-    def person(s,x,y,k=1,a=1):  # x,y = feet
+    def person(s,x,y,k=1,a=1,refl=False):  # x,y = feet
+        if refl:
+            s.circ(x,y+62*k,13*k,a=a*.13,fill=True); s.d.rounded_rectangle([(x-19*k)*S,(y)*S,(x+19*k)*S,(y+46*k)*S],int(14*k*S),fill=s.v(a*.13))
         s.circ(x,y-62*k,13*k,a=a,fill=True)
         s.d.rounded_rectangle([(x-19*k)*S,(y-46*k)*S,(x+19*k)*S,(y)*S],int(14*k*S),fill=s.v(a))
+    def cens(s,cx,cy,sz,a=1,rise=0):
+        f=F(sz); parts=[("П",0)]+[("*",0.30)]*5+[("Ь",0)]
+        adv=[s.d.textlength(ch,font=f)/S*(1.25 if ch=="*" else 1.02) for ch,_ in parts]; x=cx-sum(adv)/2
+        for (ch,dy),w in zip(parts,adv):
+            s.d.text(((x+w/2)*S,(cy+dy*sz+rise)*S),ch,font=f,fill=s.v(a),anchor="mm"); x+=w
     def star(s,x,y,r,a=1,rot=0):
         pts=[]
         for i in range(10):
@@ -111,14 +122,14 @@ def scene(i,t,c):
     if i==0:
         words_reveal(c,["ХВАТИТ ЖАЛЕТЬ","СЕБЯ."],t,a0,a0+d*0.8,120,92)
         c.line([(640-420*ease(prog(t,0.1,1)),base),(640+420*ease(prog(t,0.1,1)),base)],4,A)
-        px=640; c.person(px,base,2.0,A)
+        px=640; c.person(px,base,2.0,A,refl=True)
         for k in range(3):
-            ph=(t*0.7+k/3)%1; y=base-150+ph*140; c.circ(px-22+k*22,y,6,fill=True,a=A*(1-ph)*.9)
-        c.text("ЖАЛОСТЬ",px,base+34,22,A*.45)
+            ph=(t*0.6+k/3)%1; y=base-128+ph*(120+k*6); c.circ(px+30+k*9+ph*10,y,6-ph*2,fill=True,a=A*(1-ph*.8)*.9)
     if i==1:
-        words_reveal(c,["ВСЕМ НА ТВОИ ПРОБЛЕМЫ","[ПИИП]"],t,a0,a0+d*0.9,110,72,1.2)
+        words_reveal(c,["ВСЕМ НА ТВОИ ПРОБЛЕМЫ"],t,a0,a0+BEEP*0.8,110,72)
+        bw_=prog(t,a0+BEEP-0.05,a0+BEEP+0.2); c.cens(640,110+86,110,A*bw_,rise=(1-ease(bw_))*22)
         c.line([(100,base),(1180,base)],4,A)
-        c.person(330,base,2.0,A)
+        c.person(330,base,2.0,A,refl=True)
         for k in range(8):
             x=640+k*75+prog(t,0,a1+PAD)*220
             if x<1250: c.person(x,base,0.9,A*.55*max(0,1-(x-1000)/250 if x>1000 else 1))
@@ -135,7 +146,7 @@ def scene(i,t,c):
                 for xx in (wx0+off+35,wx0+off+105):
                     if xx<wx1: c.line([(xx,yy),(xx,min(base,yy+40))],2,A*.6) if False else c.line([(xx,yy),(xx,yy+40)],2,A*.6)
         c.text("ПРОБЛЕМЫ",870,base-wh-26,24,A*.7*wp)
-        mv=ease(prog(t,a0+1.0,a1)); c.person(520+mv*190,base,2.0,A)
+        mv=ease(prog(t,a0+1.0,a1)); c.person(520+mv*190,base,2.0,A,refl=True)
     if i==3:
         words_reveal(c,["НЕ ХОЧЕТСЯ?","ВСТАВАЙ."],t,a0+0.9,a0+d*0.95,100,92)
         cx,cy=640,470
@@ -159,7 +170,7 @@ def scene(i,t,c):
         if b2>.97: c.text("∞",x0+L+60,590,60,A) if False else c.text("НАВСЕГДА",x0+L-90,590,24,0)
     if i==5:
         words_reveal(c,["КАЖДЫЙ ДЕНЬ","ТЫ ВЫБИРАЕШЬ."],t,a0,a0+d*0.55,100,86)
-        up=[(500,560),(620,560),(760,440),(1020,440)]; dn=[(620,560),(760,650),(1020,650)]
+        up=[(620,560),(760,440),(1020,440)]; dn=[(620,560),(760,650),(1020,650)]
         gp=ease(prog(t,a0+0.5,a0+1.4)); 
         def part(pts,p):
             L=[0]
@@ -184,7 +195,7 @@ def scene(i,t,c):
                 if tg<=dl: f=tg/dl; pos=(seg[k][0]+(seg[k+1][0]-seg[k][0])*f,seg[k][1]+(seg[k+1][1]-seg[k][1])*f); break
                 tg-=dl; pos=seg[k+1]
             c.person(pos[0],pos[1],1.6,A)
-        c.text("УСИЛИЕ",1130,436,34,A*gp)
+        c.text("УСИЛИЕ",1135,436,34,A*gp)
         c.text("ОПРАВДАНИЕ",1000,620,28,A*gp*late*.6)
     if i==6:
         words_reveal(c,["СДЕЛАЙ СЕГОДНЯ ТО,","ЧЕГО ДРУГИЕ НЕ ХОТЯТ."],t,a0,a0+2.6,100,78)
@@ -198,9 +209,9 @@ def scene(i,t,c):
     if i==7:
         words_reveal(c,["ЧЕРЕЗ ГОД ТЫ","СКАЖЕШЬ СЕБЕ СПАСИБО."],t,a0,a0+d*0.6,95,72)
         c.line([(100,base),(1180,base)],4,A)
-        c.person(380,base,1.5,A*.35); c.text("?",380,base-135,40,A*.35); c.text("ЖДАЛ",380,base+30,22,A*.45)
+        c.person(380,base,1.5,A*.35,refl=True); c.text("?",380,base-135,40,A*.35); c.text("ЖДАЛ",380,base+30,22,A*.45)
         gr=ease(prog(t,a0+0.6,a0+3.0)); k=1.5+1.4*gr
-        c.person(860,base,k,A); st=(860,base-62*k-70)
+        c.person(860,base,k,A,refl=True); st=(860,base-62*k-70)
         c.star(*st,18+8*gr,A*gr,t*.5); c.rays(st[0],st[1],28+8*gr,42+10*gr,12,A*gr*.7,t*.6)
         c.text("ДЕЛАЛ",860,base+30,22,A*.7)
     if i==8:
@@ -214,24 +225,25 @@ def scene(i,t,c):
 
 def frame(f):
     t=f/FPS
-    # find scene
     i=0
     for k,s in enumerate(starts):
         if t>=s: i=k
-    c=C(); scene(i,t-starts[i],c)
-    sharp=c.im.resize((W,H),Image.LANCZOS)
-    g1=sharp.filter(ImageFilter.GaussianBlur(5)); g2=sharp.filter(ImageFilter.GaussianBlur(22)); g3=sharp.filter(ImageFilter.GaussianBlur(60))
-    arr=np.array(sharp,np.float32)*1.0+np.array(g1,np.float32)*.12+np.array(g2,np.float32)*.28+np.array(g3,np.float32)*.35
-    arr=np.maximum(arr,0)+background(t)
-    # vignette
-    yy,xx=np.mgrid[0:H,0:W]; vg=1-0.35*(((xx-W/2)/(W/2))**2+((yy-H/2)/(H/2))**2)/2
-    arr=np.clip(arr*vg,0,255)
-    # fade in/out whole video
+    loc=t-starts[i]; dur=(starts[i+1] if i<len(starts)-1 else TOTAL)-starts[i]
+    c=C(); scene(i,loc,c); dust(c,t)
+    sharp=c.im.resize((OW,OH),Image.LANCZOS)
+    z=1+0.04*sm(clamp(loc/dur))
+    sharp=sharp.transform((OW,OH),Image.AFFINE,(1/z,0,OW/2*(1-1/z),0,1/z,OH*0.46*(1-1/z)),Image.BICUBIC)
+    sx=np.array(sharp,np.float32)
+    g1=np.array(sharp.filter(ImageFilter.GaussianBlur(7)),np.float32)
+    g2=np.array(sharp.resize((OW//2,OH//2),Image.BOX).filter(ImageFilter.GaussianBlur(16)).resize((OW,OH),Image.BICUBIC),np.float32)
+    g3=np.array(sharp.resize((OW//4,OH//4),Image.BOX).filter(ImageFilter.GaussianBlur(26)).resize((OW,OH),Image.BICUBIC),np.float32)
+    arr=(sx+g1*.12+g2*.26+g3*.34+BG)*VIG
     fa=min(1,t/0.3)*min(1,(TOTAL-t)/0.4); arr*=fa
-    return np.repeat(arr.astype(np.uint8)[:,:,None],3,2)
+    arr+=np.random.default_rng(f).normal(0,1.5,arr.shape).astype(np.float32)
+    return np.repeat(np.clip(arr,0,255).astype(np.uint8)[:,:,None],3,2)
 
 if __name__=="__main__":
     a,b=int(sys.argv[1]),int(sys.argv[2]); out=sys.argv[3]
-    p=subprocess.Popen(["ffmpeg","-v","error","-y","-f","rawvideo","-pix_fmt","rgb24","-s",f"{W}x{H}","-r",str(FPS),"-i","-","-c:v","libx264","-preset","fast","-crf","16","-pix_fmt","yuv420p",out],stdin=subprocess.PIPE)
+    p=subprocess.Popen(["ffmpeg","-v","error","-y","-f","rawvideo","-pix_fmt","rgb24","-s",f"{OW}x{OH}","-r",str(FPS),"-i","-","-c:v","libx264","-preset","medium","-crf","13","-pix_fmt","yuv420p",out],stdin=subprocess.PIPE)
     for f in range(a,b): p.stdin.write(frame(f).tobytes())
     p.stdin.close(); p.wait()

@@ -5,7 +5,8 @@
     python3 build_episode.py ASSETS_DIR OUT_DIR
 
 ASSETS_DIR содержит:
-    f01.png ... f12.png  - кадры сцен (если файла нет - ставится заметная заглушка)
+    v01.mp4 ... v12.mp4  - живые клипы сцен (приоритетнее кадров; без наезда камеры)
+    f01.png ... f12.png  - статичные кадры сцен (если нет ни клипа, ни кадра - заглушка)
     a01.mp3, a02a.mp3 ... - реплики (если файла нет - субтитр идёт без звука)
 
 Результат: OUT_DIR/ep01.mp4
@@ -177,9 +178,16 @@ def build_scene(sc, assets, tmp, idx):
         end_card_png(sc["end_card"], png)
         subs.append((png, 0.5, total))
 
-    nframes = max(1, round(total * FPS))
-    zoom = (f"1+0.07*on/{nframes}" if idx % 2 == 0 else f"1.07-0.07*on/{nframes}")
-    cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-framerate", str(FPS), "-t", f"{total:.3f}", "-i", base_png]
+    # Если есть живой клип v{NN}.mp4 — он фон сцены (зацикливается/обрезается под озвучку).
+    # Иначе статичный кадр БЕЗ наезда камеры.
+    video_path = os.path.join(assets, f"v{n:02d}.mp4")
+    have_video = os.path.exists(video_path)
+    if have_video:
+        cmd = ["ffmpeg", "-y", "-v", "error", "-stream_loop", "-1", "-t", f"{total:.3f}", "-i", video_path]
+        bg_filter = f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}[bg0]"
+    else:
+        cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-framerate", str(FPS), "-t", f"{total:.3f}", "-i", base_png]
+        bg_filter = f"[0:v]fps={FPS}[bg0]"
     for png, _, _ in subs:
         cmd += ["-loop", "1", "-framerate", str(FPS), "-t", f"{total:.3f}", "-i", png]
     cmd += ["-f", "lavfi", "-t", f"{total:.3f}", "-i", "anullsrc=r=44100:cl=stereo"]
@@ -187,7 +195,7 @@ def build_scene(sc, assets, tmp, idx):
     for mp3, _ in auds:
         cmd += ["-i", mp3]
 
-    fc = [f"[0:v]scale=1620:2880,zoompan=z='{zoom}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS}[bg0]"]
+    fc = [bg_filter]
     for i, (_, a, b) in enumerate(subs):
         fc.append(f"[bg{i}][{1 + i}:v]overlay=0:0:enable='between(t,{a:.3f},{b:.3f})'[bg{i + 1}]")
     fc.append(f"[bg{len(subs)}]format=yuv420p[vout]")
@@ -203,7 +211,7 @@ def build_scene(sc, assets, tmp, idx):
             "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-r", str(FPS),
             "-c:a", "aac", "-b:a", "160k", "-ar", "44100", "-ac", "2", "-t", f"{total:.3f}", out]
     subprocess.run(cmd, check=True)
-    return out, have_frame, [k for k, _, _ in sc["lines"] if not os.path.exists(os.path.join(assets, k + ".mp3"))]
+    return out, (have_frame or have_video), [k for k, _, _ in sc["lines"] if not os.path.exists(os.path.join(assets, k + ".mp3"))]
 
 
 def main():

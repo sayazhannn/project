@@ -150,10 +150,10 @@ def scene(i,t,c):
         c.line([(100,base),(1180,base)],4,A)
         c.rrect(900,330,1130,base,6,4,A*prog(t,.1,.7)); c.star(1015,285,24,A*prog(t,.3,.8),t*.5); c.rays(1015,285,36,52,12,A*.6*prog(t,.3,.8),t*.6)
         c.person(300,base,1.9,A,refl=True)
-        u=ease(prog(t,a0+0.5,a0+1.5))
+        u=ease(prog(t,a0+0.3,a0+1.1))
         for k in range(int(26*u)+1):
             v=k/26; x=330+560*v; y=540+80*v-4*170*v*(1-v); c.circ(x,y,5,fill=True,a=A*.8)
-        xe=ease(prog(t,a0+1.5,a0+1.8))
+        xe=ease(prog(t,a0+1.1,a0+1.4))
         if xe>0: c.line([(838,572),(838+32*xe,572+32*xe)],6,A); c.line([(870,572),(870-32*xe,572+32*xe)],6,A)
     if i==1:
         words_reveal(c,["СРАЗУ НИЧЕГО","НЕ БЫВАЕТ."],t,a0,a0+d*0.8,110,92)
@@ -167,7 +167,7 @@ def scene(i,t,c):
     if i==2:
         words_reveal(c,["ОДИН ПРОЦЕНТ","В ДЕНЬ."],t,a0,a0+d*0.8,110,92)
         c.text("1%",640,450,230,A*ease(prog(t,a0+0.3,a0+0.9)))
-        c.rrect(340,600,940,634,8,3,A*.4); c.rrect(340,600,346+4*ease(prog(t,a0+0.9,a0+1.4)),634,3,3,A,fill=True)
+        c.rrect(340,600,940,634,8,3,A*.4); c.rrect(340,600,346+4*ease(prog(t,a0+0.6,a0+1.0)),634,3,3,A,fill=True)
     if i==3:
         words_reveal(c,["КАЖЕТСЯ —","ЭТО НИЧЕГО."],t,a0,a0+d*0.8,110,92)
         gp=ease(prog(t,a0+0.4,a1-0.1)); p=chart(c,100/365,gp,GROW,A)
@@ -201,7 +201,7 @@ def scene(i,t,c):
                 c.circ(x,y,16,fill=True,a=A*ap*.9)
     if i==8:
         words_reveal(c,["НАЧНИ С ОДНОГО","ПРОЦЕНТА. СЕГОДНЯ."],t,a0,a0+d*0.8,110,86)
-        bt=ease(prog(t,a0+d*0.5,a0+d*0.5+0.5)); pulse=.5+.5*math.sin(t*4); bw=190+10*pulse
+        bt=ease(prog(t,a0+d*0.6,a0+d*0.6+0.5)); pulse=.5+.5*math.sin(t*4); bw=190+10*pulse
         c.rrect(640-bw,430-85,640+bw,430+85,85,6,A*bt); c.text("+1%",640,422,140,A*bt)
         for k in range(20):
             ang=k*math.pi*2/20+t*.2; c.line([(640+(bw+40+8*pulse)*math.cos(ang),430+(125+8*pulse)*math.sin(ang)),(640+(bw+64)*math.cos(ang),430+(150)*math.sin(ang))],2,A*bt*.4)
